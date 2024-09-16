@@ -1,6 +1,8 @@
 import React from 'react';
 import Navbar from './components/Navbar';
-import '../Styles/globals.css';
+import Footer from './components/Footer';
+import '../../src/Styles/globals.css';
+
 
 
 export default function Layout({ children }) {
@@ -8,7 +10,7 @@ export default function Layout({ children }) {
     <>
       <Navbar />
       <main>{children}</main>
+      <Footer /> {/* Add Footer component here */}
     </>
   );
 }
-
