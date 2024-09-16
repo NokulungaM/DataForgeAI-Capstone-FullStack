@@ -2,9 +2,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { getRecipesByIngredients } = require('../controllers/recipeController'); // Adjust path as needed
+const { fetchAndDisplayRecipes } = require('../controllers/recipeController');
 
-// Route to get the relevant recipes based on the saved recipes in MongoDB
-router.get('/recipes', getRecipesByIngredients);
+// Single route for fetching recipes
+router.get('/recipes', fetchAndDisplayRecipes);
 
 module.exports = router;

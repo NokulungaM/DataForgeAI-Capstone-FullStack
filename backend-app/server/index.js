@@ -3,8 +3,7 @@ const express = require("express");
 const cors = require("cors");
 // CONNECTING TO MONGODB
 const { connectToMongoDB } = require("./db/connection");
-const recipeAPIRoutes = require('./services/recipeAPIService'); // Existing route for fetching/saving recipes
-const recipeRoutes = require('./routes/recipeRoutes'); // New route for fetching relevant recipes
+const recipeRoutes = require('./routes/recipeRoutes'); // The refactored route that handles everything (fetching, processing, saving, and displaying)
 // CONFIGURING ENVIRONMENT VARIABLES
 require("dotenv").config();
 
@@ -29,8 +28,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // USING ROUTES
-app.use('/fetch-recipes', recipeAPIRoutes); // Route for fetching recipes from external API and saving
-app.use('/api', recipeRoutes);  // Route for fetching saved recipes from MongoDB (title, image, instructions)
+app.use('/api', recipeRoutes);  // Single route that handles fetching recipes from the DB or the API, processes them with Gemini, and saves them
 
 // STARTING THE SERVER AND CONNECTING TO MONGODB
 async function startServer() {
@@ -40,7 +38,7 @@ async function startServer() {
       console.log(`Server is running on port ${port}`);
     });
   } catch (error) {
-    console.error("An error occured while trying to start the server:", error);
+    console.error("An error occurred while trying to start the server:", error);
     process.exit(1);
   }
 }

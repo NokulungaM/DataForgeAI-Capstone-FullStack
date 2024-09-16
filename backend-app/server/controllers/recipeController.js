@@ -1,37 +1,40 @@
 // controllers/recipeController.js
 
-const Recipe = require('../models/Recipe'); // Ensure the correct model path
+const Recipe = require('../models/Recipe');
+const { fetchAndSaveRecipes } = require('../services/recipeAPIService');
 
-// Function to get relevant recipes from MongoDB based on ingredients
-const getRecipesByIngredients = async (req, res) => {
+// Controller to fetch and display recipes
+const fetchAndDisplayRecipes = async (req, res) => {
   try {
-    const { ingredients } = req.query;
+    const ingredients = req.query.ingredients; // Get ingredients from query parameters
 
-    // Ensure the ingredients query param exists
     if (!ingredients) {
       return res.status(400).json({ error: 'Ingredients query parameter is required' });
     }
 
-    // Split the ingredients string into an array (assuming ingredients are comma-separated)
     const ingredientsArray = ingredients.split(',').map(ingredient => ingredient.trim().toLowerCase());
 
-    // Find recipes in MongoDB where the usedIngredients or missedIngredients match any of the user's ingredients
-    const recipes = await Recipe.find({
+    // Step 1: Check if relevant recipes are already in the database
+    const existingRecipes = await Recipe.find({
       $or: [
         { 'usedIngredients.name': { $in: ingredientsArray } },
         { 'missedIngredients.name': { $in: ingredientsArray } }
       ]
-    }, 'title image instructions').lean(); // Only return title, image, and instructions
+    }, 'title image instructions').lean();
 
-    if (!recipes.length) {
-      return res.status(404).json({ error: 'No relevant recipes found for the given ingredients' });
+    if (existingRecipes.length > 0) {
+      // If recipes exist in the database, return them
+      return res.json(existingRecipes);
     }
 
-    res.json(recipes);
+    // Step 2: If not found in the database, fetch from the API, process with Gemini, save, and return
+    const newRecipes = await fetchAndSaveRecipes(ingredients);
+    return res.json(newRecipes);
+
   } catch (error) {
-    console.error('Error fetching relevant recipes:', error);
-    res.status(500).json({ error: 'An error occurred while fetching relevant recipes' });
+    console.error('Error fetching recipes:', error);
+    res.status(500).json({ error: 'An error occurred while fetching recipes' });
   }
 };
 
-module.exports = { getRecipesByIngredients };
+module.exports = { fetchAndDisplayRecipes };
