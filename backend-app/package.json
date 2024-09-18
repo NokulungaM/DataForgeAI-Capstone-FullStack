@@ -16,16 +16,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD:server/package.json
-    "Capstone-Server": "file:",
-=======
-    "axios": "^1.7.7",
->>>>>>> 7e92f5b6ee3c732c01f98d71f692f252fa08d81c:backend-app/package.json
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-    "express": "^4.20.0",
+    "express": "^4.17.1",
     "mongodb": "^4.1.2",
-    "mongoose": "^6.13.1"
+    "mongoose": "^6.0.7"
   },
   "devDependencies": {
     "chai": "^4.3.4",
