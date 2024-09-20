@@ -1,4 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
+import path from 'path';
 
-export default nextConfig;
+export default {
+  pageExtensions: ['js', 'jsx'],
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.resolve(process.cwd(), 'src');
+    return config;
+  },
+};
