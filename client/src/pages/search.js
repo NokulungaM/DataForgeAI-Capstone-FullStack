@@ -1,113 +1,87 @@
-import React, { useState } from 'react';
-// import { FaSearch } from "react-icons/fa";
+import { useState } from 'react';
 
 const Search = () => {
-  const [ingredients, setIngredients] = useState([]);
-  const [currentIngredient, setCurrentIngredient] = useState('');
-  const [recipe, setRecipe] = useState(null); 
+  const [recipes, setRecipes] = useState([]);
+  const [query, setQuery] = useState('');
+  const [expandedIndex, setExpandedIndex] = useState(null); // Track expanded card
 
-  const handleInputChange = (event) => {
-    setCurrentIngredient(event.target.value);
-  };
-
-  const handleAddIngredient = () => {
-    if (currentIngredient.trim() !== '') {
-      setIngredients([...ingredients, currentIngredient.trim()]);
-      setCurrentIngredient('');
-    }
-  };
-
-  const handleRemoveIngredient = (index) => {
-    setIngredients(ingredients.filter((_, i) => i !== index));
-  };
-
-  const handleGenerateRecipe = async () => {
+  const handleSearch = async () => {
     try {
-      // 1. Join ingredients into a  string
-      const ingredientsString = ingredients.join("&");
-
-      // 2. Construct the API endpoint with query parameters
-      const apiEndpoint = `http://localhost:3001/api/recipes?ingredients=${ingredientsString}`;
-
-      // 3. Make the API request using Fetch
-      const response = await fetch(apiEndpoint, {
-        method: "GET", // Or 'GET' depending on your API
-        headers: {
-          "Content-Type": "application/json", // Adjust if needed
-        },
-        // You might need a body if using 'POST'
-        // body: JSON.stringify({ /* any additional data */ }),
-      });
-
-      // 4. Handle the API response
-      if (response.ok) {
-        const data = await response.json();
-        setRecipe(data.instructions); // Assuming the API returns a "instructions" field
-      } else {
-        console.error("Error generating recipe:", response.status);
-      }
+      const response = await fetch(`http://localhost:3001/api/recipes?ingredients=${query}`);
+      const data = await response.json();
+      setRecipes(data);
     } catch (error) {
-      console.error("Error generating recipe:", error);
+      console.error('Error fetching recipes:', error);
     }
+  };
+
+  const toggleExpand = (index) => {
+    setExpandedIndex(index === expandedIndex ? null : index); // Toggle expanded state
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <h1 className="text-2xl mb-4">Whats cooking ?</h1>
-
-      {/* Input and Add Button Container */}
-      <div className="relative w-1/2 flex">
-        <input
-          type="text"
-          placeholder="Enter ingredient"
-          value={currentIngredient}
-          onChange={handleInputChange}
-          className="text-gray-900 text-lg mb-4 p-2 border w-full rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
-        <button
-          onClick={handleAddIngredient}
-          className="bg-green-500 px-4 py-2 rounded-md text-white ml-2 h-full"
-        >
-          Add
-        </button>
+    <div className="min-h-screen bg-gray-900 text-white p-4">
+      {/* Header Section */}
+      <div className="flex flex-col items-center">
+        <h1 className="text-2xl mb-4">Whats cooking?</h1> {/* New Header */}
+        
+        <div className="w-full flex items-center justify-center mb-6">
+          <input
+            type="text"
+            placeholder="Enter ingredients"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full md:w-1/2 p-3 rounded-l bg-gray-800 text-white border-none outline-none"
+          />
+          <button
+            onClick={handleSearch}
+            className="p-3 bg-green-500 rounded-r text-black hover:bg-green-400"
+          >
+            Find
+          </button>
+        </div>
       </div>
 
-      {/* Ingredients List */}
-      {ingredients.length > 0 && (
-        <div className="mb-4 flex flex-wrap">
-          <h2 className="text-lg font-medium mr-2">Ingredients:</h2>
-          <ul className="flex flex-wrap gap-2">
-            {ingredients.map((ingredient, index) => (
-              <li key={index} className="relative">
-                <button className="bg-gray-200 px-2 py-1 rounded-md text-sm text-gray-700">
-                  {ingredient}
-                </button>
-                <button
-                  onClick={() => handleRemoveIngredient(index)}
-                  className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full px-2 text-xs"
-                >
-                  x
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* Results Section */}
+      <div className="mt-8">
+        {recipes.length > 0 && (
+          <h2 className="text-xl text-center mb-4">
+            Search results for "{query}"
+          </h2>
+        )}
 
-      <button 
-        onClick={handleGenerateRecipe} 
-        className="bg-green-500 p-2 rounded"
-      >
-        Generate Recipe
-      </button>
-
-      {/* Display the generated recipe */}
-      {recipe && (
-        <div className="mt-4 p-4 border rounded-md">
-          <h2 className="text-gray-600 text-lg font-medium mb-2">Generated Recipe:</h2>
-          <p>{recipe}</p> 
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {recipes.map((recipe, index) => (
+            <div
+              key={index}
+              className="bg-gray-800 p-4 rounded-lg shadow-lg text-center"
+              onClick={() => toggleExpand(index)} // Toggle expanded state on click
+            >
+              <img
+                src={recipe.image}
+                alt={recipe.title}
+                className="w-full h-40 object-cover rounded-md mb-4"
+              />
+              <h3 className="text-lg font-bold mb-2">{recipe.title}</h3>
+              
+              {/* Show brief instructions if not expanded */}
+              {expandedIndex === index ? (
+                <p className="text-sm text-gray-400">
+                  {recipe.instructions}
+                </p>
+              ) : (
+                <p className="text-sm text-gray-400">
+                  {recipe.instructions.slice(0, 100)}...
+                </p>
+              )}
+              
+              <button className="mt-4 text-blue-500">
+                {expandedIndex === index ? "Show Less" : "Show More"}
+              </button>
+            </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };
