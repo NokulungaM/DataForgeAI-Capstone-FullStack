@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const Admin = require('../models/user')
 const User = require('../models/user');
 
 const authMiddleware = async (req, res, next) => {
@@ -12,26 +13,30 @@ const authMiddleware = async (req, res, next) => {
         // Veryfy token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Fetch user
-        const user = await User.findById(decoded._id);
-        if (!user) {
-            return res.status(401).json({ error: 'Access denied. User not found'});
+        // Fetch user based on the role
+        if (role === 'admin') {
+            const admin = await Admin.findById(decoded._id);
+            if (!admin) throw new Error('Admin not found');
+            req.admin = admin;
+        } else if (role === 'customer') {
+            const user = await User.findById(decoded._id);
+            if (!user) throw new Error('Access denied. User not found');
+            req.user = user;
+        } else {
+            return res.status(400).json({ error: 'Invalid role'});
         }
 
-        req.user = user;
+        // Route handler 
+    } catch (error) {
+        if (error.message === 'No token provided') {
+            return res.status(401).json({ error: 'No token provided'});
+        } else if (error.message === 'jwt malformed') {
+            return res.status(401).json({ error: 'Invalid token'});
+        } else if (error.message === 'Admin not found' || error.message === 'User not found') {
+            return res.status(401).json({ error: 'Authentication failed'});
+        }
+            return res.status(500).json({ error: 'Internal server error' });
+         }
+    };
 
-        next();
-} catch (error) {
-    if (error.message === 'No token provided') {
-        return res.status(401).json({ error: 'No token provided'});
-    } else if (error.message === 'jwt malformed') {
-        return res.status(401).json({ error: 'Invalid token'});
-    } else if (error.message === 'Access denied. User not found') {
-        return res.status(401).json({ error: 'Authentication failed'});
-    }
-
-    return res.status(500).json({ error: 'Internal server error' });
-    }
-};
-
-module.exports = authMiddleware;
+    module.exports = authMiddleware;
