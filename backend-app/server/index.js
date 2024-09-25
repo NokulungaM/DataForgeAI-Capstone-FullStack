@@ -35,7 +35,7 @@ app.use(express.json());
 app.use('/api', recipeRoutes);  // Single route that handles fetching recipes from the DB or the API, processes them with Gemini, and saves them
 
 app.use('/admin', adminRoutes);
-app.use('userRoutes', userRoutes)
+app.use('user', userRoutes)
 
 // STARTING THE SERVER AND CONNECTING TO MONGODB
 async function startServer() {
