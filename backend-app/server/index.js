@@ -5,9 +5,12 @@ const cors = require("cors");
 const { connectToMongoDB } = require("./db/connection");
 const recipeRoutes = require('./routes/recipeRoutes'); // The refactored route that handles everything (fetching, processing, saving, and displaying)
 
+
 //Routes to handle admin and user registration
 adminRoutes = require('./routes/admin');
-userRoutes = require('./routes/user')
+userRoutes = require('./routes/user');
+const mealPlan = require('./routes/mealPlanRoutes')
+
 // CONFIGURING ENVIRONMENT VARIABLES
 require("dotenv").config();
 
@@ -33,6 +36,7 @@ app.use(express.json());
 
 // USING ROUTES
 app.use('/api', recipeRoutes);  // Single route that handles fetching recipes from the DB or the API, processes them with Gemini, and saves them
+app.use('/meal', mealPlan);
 
 app.use('/admin', adminRoutes);
 app.use('user', userRoutes)
