@@ -7,7 +7,7 @@ const authController = require('../controllers/authController');
 
 
 //Route to register new users
-router.post('register', registerUser);
+router.post('/register', registerUser);
 
 router.post('/signup', authController.signup);
 
