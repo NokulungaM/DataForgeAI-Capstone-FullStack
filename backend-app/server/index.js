@@ -7,7 +7,7 @@ const recipeRoutes = require('./routes/recipeRoutes'); // The refactored route t
 
 //Routes to handle admin and user registration
 const adminRoutes = require('./routes/admin');
-const userRoutes = require('./routes/user')
+const userRoutes = require('./routes/user');
 
 const mealPlan = require('./routes/mealPlanRoutes')
 // CONFIGURING ENVIRONMENT VARIABLES
@@ -37,7 +37,7 @@ app.use(express.json());
 app.use('/api', recipeRoutes);  // Single route that handles fetching recipes from the DB or the API, processes them with Gemini, and saves them
 
 app.use('/admin', adminRoutes);
-app.use('user', userRoutes)
+app.use('/user', userRoutes);
 
 // STARTING THE SERVER AND CONNECTING TO MONGODB
 async function startServer() {
