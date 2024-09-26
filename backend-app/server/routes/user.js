@@ -15,12 +15,4 @@ router.get('/ingredients', authMiddleware, getUserIngredients);
 // Route to add ingredients for users
 router.post('/ingredients', authMiddleware, addUserIngredients);
 
-// Admin-only route
-router.get('/admin', authMiddleware, (req, res) => {
-    if (!req.user.isAdmin) { 
-        return res.status(403).json({ error: 'Access denied. Admin only.' });
-    }
-    res.status(200).json({ message: 'Welcome to the admin area!' });
-});
-
 module.exports = router;
