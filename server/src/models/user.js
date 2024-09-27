@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
   savedIngredients: [{ type: String }],
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
-  likedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+  ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
 
   tokenBlacklist: [{ type: String }],
