@@ -1,10 +1,15 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true,
     trim: true,
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
   },
   email: {
     type: String,
@@ -24,8 +29,10 @@ const userSchema = new mongoose.Schema({
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
   savedIngredients: [{ type: String }],
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
-  likedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+  ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+
+  tokenBlacklist: [{ type: String }],
 });
 
 const User = mongoose.model("User", userSchema);
