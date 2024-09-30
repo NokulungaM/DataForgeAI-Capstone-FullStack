@@ -41,7 +41,32 @@ const loginUser = async (req, res) => {
 };
 
 
+
+const getUserIngredients = async (req, res) => {
+  try {
+    // Assuming the user ID is accessible from the request object (e.g., req.user.id)
+    const userId = req.user.id;
+
+    // Find the user by ID and retrieve their ingredients
+    const user = await User.findById(userId).select("ingredients"); // Only fetch the 'ingredients' field
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user.ingredients);
+  } catch (error) {
+    console.error("Error fetching user ingredients:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+    
+
+
+
+
 module.exports = {
     registerUser,
     loginUser,
+    getUserIngredients
 };
