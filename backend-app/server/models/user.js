@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
+    required: true,
     enum: ["user", "admin"],
     default: "user",
   },
@@ -27,7 +28,7 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
-  savedIngredients: [{ type: String }],
+  Ingredients: [{ type: String }],
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
