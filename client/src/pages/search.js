@@ -1,30 +1,44 @@
 import { useState } from 'react';
+import { Dialog } from '@headlessui/react';
 
 const Search = () => {
   const [recipes, setRecipes] = useState([]);
   const [query, setQuery] = useState('');
-  const [expandedIndex, setExpandedIndex] = useState(null); // Track expanded card
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
+    if (!query.trim()) return; // Avoid empty queries
+
+    setLoading(true);
     try {
       const response = await fetch(`http://localhost:3001/api/recipes?ingredients=${query}`);
+      if (!response.ok) throw new Error('Failed to fetch recipes');
       const data = await response.json();
       setRecipes(data);
     } catch (error) {
       console.error('Error fetching recipes:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const toggleExpand = (index) => {
-    setExpandedIndex(index === expandedIndex ? null : index); // Toggle expanded state
+  const openModal = (recipe) => {
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedRecipe(null);
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-800 to-blue-700 text-white p-6">
       {/* Header Section */}
       <div className="flex flex-col items-center">
-        <h1 className="text-2xl mb-4">Whats cooking?</h1> {/* New Header */}
-        
+        <h1 className="text-4xl font-bold mb-6">What's cooking?</h1>
         <div className="w-full flex items-center justify-center mb-6">
           <input
             type="text"
@@ -35,7 +49,7 @@ const Search = () => {
           />
           <button
             onClick={handleSearch}
-            className="p-3 bg-green-500 rounded-r text-black hover:bg-green-400"
+            className="p-3 bg-teal-500 hover:bg-teal-600 rounded-r text-black font-semibold transition-transform transform hover:scale-105"
           >
             Find
           </button>
@@ -44,44 +58,59 @@ const Search = () => {
 
       {/* Results Section */}
       <div className="mt-8">
+        {loading && <p>Loading recipes...</p>}
         {recipes.length > 0 && (
-          <h2 className="text-xl text-center mb-4">
-            Search results for "{query}"
-          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {recipes.map((recipe, index) => (
+              <div
+                key={recipe.id || index}
+                className="bg-white text-black rounded-lg shadow-lg overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
+                onClick={() => openModal(recipe)}
+              >
+                <img
+                  src={recipe.image || 'default-image-url.jpg'}
+                  alt={recipe.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{recipe.title}</h3>
+                  <p className="mt-2 text-sm text-gray-700">
+                    {recipe.instructions
+                      ? `${recipe.instructions.slice(0, 100)}...`
+                      : 'No instructions available.'}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {recipes.map((recipe, index) => (
-            <div
-              key={index}
-              className="bg-gray-800 p-4 rounded-lg shadow-lg text-center"
-              onClick={() => toggleExpand(index)} // Toggle expanded state on click
-            >
-              <img
-                src={recipe.image}
-                alt={recipe.title}
-                className="w-full h-40 object-cover rounded-md mb-4"
-              />
-              <h3 className="text-lg font-bold mb-2">{recipe.title}</h3>
-              
-              {/* Show brief instructions if not expanded */}
-              {expandedIndex === index ? (
-                <p className="text-sm text-gray-400">
-                  {recipe.instructions}
-                </p>
-              ) : (
-                <p className="text-sm text-gray-400">
-                  {recipe.instructions.slice(0, 100)}...
-                </p>
-              )}
-              
-              <button className="mt-4 text-blue-500">
-                {expandedIndex === index ? "Show Less" : "Show More"}
-              </button>
-            </div>
-          ))}
-        </div>
       </div>
+
+      {/* Recipe Modal */}
+      <Dialog
+        open={isModalOpen}
+        onClose={closeModal}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      >
+        <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative z-10 shadow-lg">
+          <button onClick={closeModal} className="absolute top-2 right-2 text-black hover:text-gray-500">
+            Close
+          </button>
+          {selectedRecipe && (
+            <>
+              <img
+                src={selectedRecipe.image || 'default-image-url.jpg'}
+                alt={selectedRecipe.title}
+                className="w-full h-64 object-cover rounded-t-lg"
+              />
+              <h3 className="text-2xl font-bold mt-4">{selectedRecipe.title}</h3>
+              <p className="mt-2 text-gray-700 whitespace-pre-wrap">
+                {selectedRecipe.instructions || 'No instructions available.'}
+              </p>
+            </>
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 };
