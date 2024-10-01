@@ -18,3 +18,5 @@ const mealSuggestionSchema = new mongoose.Schema({
 });
 
 const MealSuggestion = mongoose.model("MealSuggestion", mealSuggestionSchema);
+
+module.exports = MealSuggestion;
