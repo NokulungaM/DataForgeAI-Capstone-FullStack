@@ -21,3 +21,5 @@ const userIngredientSchema = new mongoose.Schema({
 });
 
 const UserIngredient = mongoose.model("UserIngredient", userIngredientSchema);
+
+module.exports = UserIngredient;
