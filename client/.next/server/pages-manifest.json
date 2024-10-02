@@ -1,12 +1,6 @@
 {
+  "/_document": "pages/_document.js",
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-<<<<<<< HEAD
-  "/auth/signup": "pages/auth/signup.js",
-  "/auth/signin": "pages/auth/signin.js"
-=======
-  "/search": "pages/search.js"
->>>>>>> c4e92f6f62fb88bb03f07e8f9cf960bcb1878705
+  "/meal-plan": "pages/meal-plan.js"
 }
