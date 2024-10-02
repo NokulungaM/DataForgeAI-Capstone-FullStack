@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const  User  = require('../models/user');
 
 // Register a new user
 const registerUser = async (req, res) => {
@@ -36,7 +36,7 @@ const loginUser = async (req, res) => {
         res.status(200).json({ token });
     } catch (error) {
         console.error("Error logging in:", error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error:error.message });
     }
 };
 
@@ -57,7 +57,7 @@ const getUserIngredients = async (req, res) => {
     res.status(200).json(user.Ingredients);
   } catch (error) {
     console.error("Error fetching user ingredients:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 };
     

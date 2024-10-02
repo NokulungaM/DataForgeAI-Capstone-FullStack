@@ -11,7 +11,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/signup', registerUser);
 
 // Route to log a user in (signin)
-router.post('/login', loginUser);
+router.post('/signin', loginUser);
 
 // Route to get user's ingredients 
 router.get('/ingredients', authMiddleware, getUserIngredients);

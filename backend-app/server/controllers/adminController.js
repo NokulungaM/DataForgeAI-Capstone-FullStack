@@ -1,14 +1,16 @@
-const User = require('../models/user');
+const User  = require("../models/user");
 
 // Get all users (admin function)
 const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find({});
-        res.status(200).json(users);
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+  try {
+    const users = await User.find({});
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res
+      .status(500)
+      .json({error: error.message }); 
+  }
 };
 
 // Delete a user (admin function)
@@ -22,13 +24,13 @@ const deleteUser = async (req, res) => {
         }
 
         await User.findByIdAndDelete(id);
-        res.status(200).json({ message: 'User deleted successfully' });
+        res.status(204).json({ message: 'User deleted successfully' });
     } catch (error) {
         console.error("Error deleting user:", error);
         if (error.kind === 'ObjectId') {
             return res.status(400).json({ message: 'Invalid user ID' });
         }
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ error: error.message });
     }
 };
 
