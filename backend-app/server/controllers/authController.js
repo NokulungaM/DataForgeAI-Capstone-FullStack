@@ -194,6 +194,43 @@ exports.signUp = async (req, res) => {
                 res.status(500).json({ error: 'Internal server error' });
             }
         };
+        // Reset Password
+    exports.resetPassword = async (req, res) => {
+      const { token } = req.params;
+      const { password } = req.body;
+
+      // Check for validation errors
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+
+        try {
+        const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }, // Ensure token has not expired
+        });
+
+        if (!user) {
+          return res.status(400).json({ error: "Invalid or expired token" });
+        }
+
+        // Hash the new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Update the user's password and clear the reset token and expiration
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        await user.save();
+
+        res.status(200).json({ message: "Password has been reset successfully" });
+          } catch (error) {
+        res.status(500).json({ error: "Internal server error" });
+          }
+        };
 
         module.exports = {
             validateSignUp,
