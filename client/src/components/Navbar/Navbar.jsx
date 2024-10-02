@@ -15,14 +15,18 @@ const Navbar = () => {
     <nav className="bg-black text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <img src="/next.svg" alt="Logo" className="h-8" />
-          <span className="text-xl font-bold">DishDash</span>
+        <div className="flex items-center space-x-1"> {/* Reduced space to bring closer */}
+          <a href="/" className="flex items-center space-x-1"> {/* Logo with emoji */}
+            <span className="text-6xl">🍽️</span> {/* Enlarged emoji */}
+            <span className="text-xl font-bold">DishDash</span>
+          </a>
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8">
-          <a href="/" className="hover:text-green-500">Home</a>
+          <a href="/" className="hover:bg-green-500 hover:text-black px-4 py-2 rounded-lg">
+            Home
+          </a>
           {isLoggedIn ? (
             <>
               <a href="/search" className="hover:text-green-500">Search</a>
@@ -31,8 +35,18 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <a href="/auth/signin" className="bg-green-500 text-black px-4 py-2 rounded-lg">Sign in</a>
-              <a href="/auth/signup" className="hover:text-green-500">Sign Up</a> {/* New Sign Up Link */}
+              <a
+                href="/auth/signin"
+                className="hover:bg-green-500 hover:text-black px-4 py-2 rounded-lg"
+              >
+                Sign in
+              </a>
+              <a
+                href="/auth/signup"
+                className="hover:bg-green-500 hover:text-black px-4 py-2 rounded-lg"
+              >
+                Sign Up
+              </a>
             </>
           )}
         </div>
@@ -61,7 +75,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
-        <a href="/" className="block px-4 py-2 text-sm hover:bg-gray-700">Home</a>
+        <a href="/" className="block px-4 py-2 text-sm hover:bg-green-500 hover:text-black rounded-lg">
+          Home
+        </a>
         {isLoggedIn ? (
           <>
             <a href="/search" className="block px-4 py-2 text-sm hover:bg-gray-700">Search</a>
@@ -70,8 +86,18 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <a href="/auth/signin" className="block bg-green-500 text-black px-4 py-2 m-2 rounded-lg">Sign in</a>
-            <a href="/auth/signup" className="block px-4 py-2 text-sm hover:bg-gray-700">Sign Up</a> {/* New Sign Up Link */}
+            <a
+              href="/auth/signin"
+              className="block text-white px-4 py-2 m-2 rounded-lg hover:bg-green-500 hover:text-black"
+            >
+              Sign in
+            </a>
+            <a
+              href="/auth/signup"
+              className="block px-4 py-2 text-sm hover:bg-green-500 hover:text-black rounded-lg"
+            >
+              Sign Up
+            </a>
           </>
         )}
       </div>
