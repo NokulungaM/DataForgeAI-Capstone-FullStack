@@ -17,17 +17,17 @@ const Signup = () => {
         const userData = { username, email, password };
 
         try {
-            const response = await fetch("/api/auth/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(userData),
+            const response = await fetch("http://localhost:3001/user/signup", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(userData),
             });
 
             const data = await response.json();
 
             if (response.ok) {
                 console.log("Signup successful", data);
-                router.push("/login"); // Navigate to login after successful signup
+                router.push("/auth/signin"); // Navigate to login after successful signup
             } else {
                 setError(data.message || "Something went wrong. Please try again.");
             }
@@ -88,8 +88,8 @@ const Signup = () => {
                         </div>
 
                         <div className="signup-footer">
-                            <button type="button" onClick={() => router.push("/login")}>
-                                Already have an account? Sign up
+                            <button type="button" onClick={() => router.push("/auth/signin")}>
+                                Already have an account? Sign in
                             </button>
                         </div>
                     </form>
