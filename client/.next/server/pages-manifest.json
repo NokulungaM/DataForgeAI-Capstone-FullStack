@@ -1,8 +1,15 @@
 {
+<<<<<<< HEAD
   "/_error": "pages/_error.js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/auth/signin": "pages/auth/signin.js",
   "/": "pages/index.js",
   "/auth/signup": "pages/auth/signup.js"
+=======
+  "/_document": "pages/_document.js",
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/meal-plan": "pages/meal-plan.js"
+>>>>>>> f7cb5e8db708ba96faa973e894812bfdb54d2fb0
 }
