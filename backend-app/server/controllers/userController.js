@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
 
 
 
-const getUserIngredients = async (req, res) => {
+const getUserIngredients = async (req, res) => {git 
   try {
     // Assuming the user ID is accessible from the request object (e.g., req.user.id)
     const userId = req.user.id;
