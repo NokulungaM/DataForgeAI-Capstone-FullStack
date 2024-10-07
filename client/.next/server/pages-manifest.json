@@ -1,8 +1,8 @@
 {
-<<<<<<< HEAD
   "/_error": "pages/_error.js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
+<<<<<<< HEAD
   "/auth/signin": "pages/auth/signin.js",
   "/": "pages/index.js",
   "/auth/signup": "pages/auth/signup.js"
@@ -17,4 +17,7 @@
   "/meal-plan": "pages/meal-plan.js"
 >>>>>>> f7cb5e8db708ba96faa973e894812bfdb54d2fb0
 >>>>>>> ae777254e28c11a10dc99bc013461dc853f9f170
+=======
+  "/": "pages/index.js"
+>>>>>>> ef7b61d120b8a5053809edf9f3eaea1ca4dd6aed
 }
