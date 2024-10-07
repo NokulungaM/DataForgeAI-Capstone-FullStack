@@ -15,24 +15,24 @@ const Navbar = () => {
     <nav className="bg-black text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <img src="/next.svg" alt="Logo" className="h-8" />
+        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => router.push('/')}>
+          <span className="text-5xl">🍽️</span> {/* Bigger plate and cutlery */}
           <span className="text-xl font-bold">DishDash</span>
         </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8">
-          <a href="/" className="hover:text-green-500">Home</a>
+        <div className="hidden md:flex space-x-8 items-center">
+          <a href="/" className="hover:text-green-500 hover:border-green-500">Home</a>
           {isLoggedIn ? (
             <>
-              <a href="/search" className="hover:text-green-500">Search</a>
-              <a href="/profile" className="hover:text-green-500">Profile</a>
+              <a href="/search" className="hover:text-green-500 hover:border-green-500">Search</a>
+              <a href="/profile" className="hover:text-green-500 hover:border-green-500">Profile</a>
               <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg">Sign out</button>
             </>
           ) : (
             <>
-              <a href="/auth/signin" className="bg-green-500 text-black px-4 py-2 rounded-lg">Sign in</a>
-              <a href="/auth/signup" className="hover:text-green-500">Sign Up</a> {/* New Sign Up Link */}
+              <a href="/auth/signin" className="hover:text-green-500">Sign in</a>
+              <a href="/auth/signup" className="hover:text-green-500">Sign Up</a>
             </>
           )}
         </div>
@@ -70,11 +70,23 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <a href="/auth/signin" className="block bg-green-500 text-black px-4 py-2 m-2 rounded-lg">Sign in</a>
-            <a href="/auth/signup" className="block px-4 py-2 text-sm hover:bg-gray-700">Sign Up</a> {/* New Sign Up Link */}
+            <a href="/auth/signin" className="block text-white px-4 py-2 m-2 hover:text-green-500">Sign in</a>
+            <a href="/auth/signup" className="block px-4 py-2 text-sm hover:bg-gray-700">Sign Up</a>
           </>
         )}
       </div>
+
+      {/* Inline Styles for Hover Effect */}
+      <style jsx>{`
+        .sign-in-btn {
+          transition: color 0.3s ease; /* No border by default */
+        }
+
+        /* Show green border on hover for all menu items including Sign In */
+        nav a:hover, nav .sign-in-btn:hover {
+          border: 2px solid green; /* Green border appears on hover */
+        }
+      `}</style>
     </nav>
   );
 };
