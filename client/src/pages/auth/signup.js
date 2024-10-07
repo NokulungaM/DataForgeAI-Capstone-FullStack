@@ -18,16 +18,16 @@ const Signup = () => {
 
         try {
             const response = await fetch("http://localhost:3001/user/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(userData),
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(userData),
             });
 
             const data = await response.json();
 
             if (response.ok) {
                 console.log("Signup successful", data);
-                router.push("http://localhost:3001/user/signin"); // Navigate to login after successful signup
+                router.push("/auth/signin"); // Navigate to login after successful signup
             } else {
                 setError(data.message || "Something went wrong. Please try again.");
             }
@@ -42,8 +42,8 @@ const Signup = () => {
         <div className="signup-wrapper">
             <div className="signup-container">
                 <div className="branding">
-                    <h1>Welcome to DishDash!👋</h1>
-                    <p>Sign up and kick start your journey of a wide range of recipes!</p>
+                    <h1>Hello SaleSkip!👋</h1>
+                    <p>Skip repetitive tasks and get productive through automation. Save tons of time!</p>
                 </div>
 
                 <div className="form-container">
