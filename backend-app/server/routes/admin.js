@@ -3,7 +3,7 @@ const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware'); // Middleware for authentication
 const { getAllUsers, deleteUser } = require('../controllers/adminController');
 const {registerUser, loginUser } = require('../controllers/userController');
-const { validateSignUp, validateSignIn} = require('../controllers/authController');
+const { validateSignUp, validateSignIn, signOut} = require('../controllers/authController');
 
 
 // Route to login admin
