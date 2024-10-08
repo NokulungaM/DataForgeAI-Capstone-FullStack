@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-const Navbar = () => {
+const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage }) => {
   const [isOpen, setIsOpen] = useState(false);
   const isLoggedIn = false; // Replace with actual login state
   const router = useRouter();
@@ -16,23 +16,57 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center space-x-2 cursor-pointer" onClick={() => router.push('/')}>
-          <span className="text-5xl">🍽️</span> {/* Bigger plate and cutlery */}
+          <span className="text-5xl">🍽️</span>
           <span className="text-xl font-bold">DishDash</span>
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8 items-center">
-          <a href="/" className="hover:text-green-500 hover:border-green-500">Home</a>
-          {isLoggedIn ? (
+          {isLandingPage ? (
+            // Landing page buttons
             <>
-              <a href="/search" className="hover:text-green-500 hover:border-green-500">Search</a>
-              <a href="/profile" className="hover:text-green-500 hover:border-green-500">Profile</a>
-              <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg">Sign out</button>
+              <a href="/search" className="hover:text-green-500">Search 4 recipes</a>
+              <a href="/meal-plan" className="hover:text-green-500">Generate meal plan</a>
+              <a href="/community" className="hover:text-green-500">Community</a>
+              <a href="/profile" className="hover:text-green-500">Profile</a>
+              <a href="/sign-out" className="hover:text-green-500">Sign-out</a>
+            </>
+          ) : isAuthPage ? (
+            // Sign-in/Sign-up page buttons (empty or minimal navbar, depending on your preference)
+            null
+          ) : isSearchPage ? (
+            // Search page buttons
+            <>
+              
+              <a href="/meal-plan" className="hover:text-green-500">Generate meal plan</a>
+              <a href="/community" className="hover:text-green-500">Community</a>
+              <a href="/profile" className="hover:text-green-500">Profile</a>
+              <a href="/sign-out" className="hover:text-green-500">Sign-out</a>
+            </>
+          ) : isMealPlanPage ? (
+            // Meal-plan page buttons
+            <>
+              <a href="/search" className="hover:text-green-500">Search 4 recipes</a>
+              <a href="/community" className="hover:text-green-500">Community</a>
+              <a href="/profile" className="hover:text-green-500">Profile</a>
+              <a href="/sign-out" className="hover:text-green-500">Sign-out</a>
             </>
           ) : (
+            // Default buttons (homepage, or logged-in user's navbar)
             <>
-              <a href="/auth/signin" className="hover:text-green-500">Sign in</a>
-              <a href="/auth/signup" className="hover:text-green-500">Sign Up</a>
+              {isLoggedIn ? (
+                <>
+                  <a href="/search" className="hover:text-green-500">Search</a>
+                  <a href="/profile" className="hover:text-green-500">Profile</a>
+                  <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg">Sign out</button>
+                </>
+              ) : (
+                <>
+                  <a href="/about" className="hover:text-green-500">About us</a>
+                  <a href="/auth/signin" className="hover:text-green-500">Sign in</a>
+                  <a href="/auth/signup" className="hover:text-green-500">Sign up</a>
+                </>
+              )}
             </>
           )}
         </div>
@@ -61,32 +95,35 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
-        <a href="/" className="block px-4 py-2 text-sm hover:bg-gray-700">Home</a>
-        {isLoggedIn ? (
+        {isLandingPage ? (
+          <>
+            <a href="/about" className="block px-4 py-2 text-sm hover:bg-gray-700">About Us</a>
+            <a href="/contact" className="block px-4 py-2 text-sm hover:bg-gray-700">Contact</a>
+          </>
+        ) : isAuthPage ? (
+          null
+        ) : isSearchPage || isMealPlanPage ? (
           <>
             <a href="/search" className="block px-4 py-2 text-sm hover:bg-gray-700">Search</a>
             <a href="/profile" className="block px-4 py-2 text-sm hover:bg-gray-700">Profile</a>
-            <button onClick={handleSignOut} className="block bg-red-500 text-white px-4 py-2 m-2 rounded-lg">Sign out</button>
           </>
         ) : (
           <>
-            <a href="/auth/signin" className="block text-white px-4 py-2 m-2 hover:text-green-500">Sign in</a>
-            <a href="/auth/signup" className="block px-4 py-2 text-sm hover:bg-gray-700">Sign Up</a>
+            {isLoggedIn ? (
+              <>
+                <a href="/search" className="block px-4 py-2 text-sm hover:bg-gray-700">Search</a>
+                <a href="/profile" className="block px-4 py-2 text-sm hover:bg-gray-700">Profile</a>
+                <button onClick={handleSignOut} className="block bg-red-500 text-white px-4 py-2 m-2 rounded-lg">Sign out</button>
+              </>
+            ) : (
+              <>
+                <a href="/auth/signin" className="block text-white px-4 py-2 m-2 hover:text-green-500">Sign in</a>
+                <a href="/auth/signup" className="block px-4 py-2 text-sm hover:bg-gray-700">Sign Up</a>
+              </>
+            )}
           </>
         )}
       </div>
-
-      {/* Inline Styles for Hover Effect */}
-      <style jsx>{`
-        .sign-in-btn {
-          transition: color 0.3s ease; /* No border by default */
-        }
-
-        /* Show green border on hover for all menu items including Sign In */
-        nav a:hover, nav .sign-in-btn:hover {
-          border: 2px solid green; /* Green border appears on hover */
-        }
-      `}</style>
     </nav>
   );
 };

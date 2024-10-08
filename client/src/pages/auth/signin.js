@@ -26,7 +26,7 @@ const SignIn = () => {
 
       if (response.ok) {
         console.log("Sign-in successful", data);
-        router.push("/search"); // Navigate to a dashboard or desired page on successful sign-in
+        router.push("/landingPage"); // Navigate to a dashboard or desired page on successful sign-in
       } else {
         setError(data.message || "Invalid credentials. Please try again.");
       }
