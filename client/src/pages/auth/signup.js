@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
+
 const Signup = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -9,12 +10,15 @@ const Signup = () => {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
 
+
         const userData = { username, email, password };
+
 
         try {
             const response = await fetch("http://localhost:3001/user/signup", {
@@ -23,36 +27,47 @@ const Signup = () => {
               body: JSON.stringify(userData),
             });
 
+
             const data = await response.json();
+
 
             if (response.ok) {
                 console.log("Signup successful", data);
                 router.push("/auth/signin"); // Navigate to login after successful signup
             } else {
-                setError(data.message || "Something went wrong. Please try again.");
+                if (data.errors) {
+                    setError(data.errors.map((err) => err.msg).join(", "));
+                } else if (data.error) {
+                    setError("User already registered")
+                } else {
+                    setError("Sign-up failed. Please try again");
+                }
             }
         } catch (error) {
-            setError("Network error. Please try again.");
+            setError("Server error. Please try again.");
         } finally {
             setLoading(false);
         }
     };
 
+
     return (
         <div className="signup-wrapper">
             <div className="signup-container">
                 <div className="branding">
-                    <h1>Hello SaleSkip!👋</h1>
-                    <p>Skip repetitive tasks and get productive through automation. Save tons of time!</p>
+                    <h1>Welcome to DishDash!👋</h1>
+                    <p>Create an account to get access to your favorite dishes!</p>
                 </div>
+
 
                 <div className="form-container">
                     <h2>Sign Up</h2>
                     <form className="input-container" onSubmit={handleSubmit}>
                         {error && <div className="error-message">{error}</div>} {/* Display error */}
 
+
                         <div className="signup-input">
-                            <input 
+                            <input
                                 type="text"
                                 placeholder="Username"
                                 value={username}
@@ -61,8 +76,9 @@ const Signup = () => {
                             />
                         </div>
 
+
                         <div className="signup-input">
-                            <input 
+                            <input
                                 type="email"
                                 placeholder="Email"
                                 value={email}
@@ -71,8 +87,9 @@ const Signup = () => {
                             />
                         </div>
 
+
                         <div className="signup-input">
-                            <input 
+                            <input
                                 type="password"
                                 placeholder="Password"
                                 value={password}
@@ -81,11 +98,13 @@ const Signup = () => {
                             />
                         </div>
 
+
                         <div className="signup-buttons">
                             <button type="submit" disabled={loading}>
                                 {loading ? "Signing Up..." : "Sign Up"}
                             </button>
                         </div>
+
 
                         <div className="signup-footer">
                             <button type="button" onClick={() => router.push("/auth/signin")}>
@@ -95,6 +114,7 @@ const Signup = () => {
                     </form>
                 </div>
             </div>
+
 
             {/* Inline Styles using JSX */}
             <style jsx>{`
@@ -217,5 +237,6 @@ const Signup = () => {
         </div>
     );
 };
+
 
 export default Signup;
