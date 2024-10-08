@@ -10,7 +10,9 @@ const { validateSignUp, validateSignIn} = require('../controllers/authController
 router.post("/signup",validateSignUp, registerUser);
 
 // Route to log a user in (signin)
-router.post("/signin",validateSignIn, loginUser);
+router.post("/signin", validateSignIn, loginUser);
+
+router.post("/signout", signOut)
 
 
 // Admin-only route to get all users
