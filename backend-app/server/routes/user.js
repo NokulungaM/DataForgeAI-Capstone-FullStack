@@ -6,7 +6,7 @@ const {
     getUserIngredients } = require("../controllers/userController");
 const {  fetchAndDisplayRecipes } = require("../controllers/recipeController");
 const authMiddleware = require('../middleware/authMiddleware');
-const { validateSignUp , validateSignIn} = require('../controllers/authController');
+const { validateSignUp , validateSignIn, signOut} = require('../controllers/authController');
 
 // Route to sign up a new user
 router.post('/signup', validateSignUp , registerUser);
@@ -19,5 +19,7 @@ router.get('/ingredients', authMiddleware, getUserIngredients);
 
 // Route to add ingredients for users
 router.post("/addIngredients", authMiddleware, fetchAndDisplayRecipes);
+
+router.post("/signout", signOut)
 
 module.exports = router;
