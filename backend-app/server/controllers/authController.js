@@ -1,24 +1,24 @@
 const User = require('../models/user');
-const { check, validationResult } = require('express-validator');
+const { validationResult, body } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+
 // authMiddleware for registration
 const validateSignUp = [
-    check('username')
+    body('username')
     .trim()
-    .not
-    .isEmpty()
+    .notEmpty()
     .withMessage('Username is required')
     .isLength({ min: 3 })
     .withMessage('Username must be at least 3 characters long'),
 
-    check('email')
+    body('email')
     .trim()
     .isEmail()
     .withMessage( 'Valid email is required'),
 
-    check('password')
+    body('password')
     .isLength({ min: 6})
     .withMessage('Password must be at least 6 characters long')
     .matches(/^(?=.*[A-Za-z])(?=.*|d)(?=.*[A-Z])(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/)
@@ -27,11 +27,11 @@ const validateSignUp = [
 
 // Validation middleware for sign-in
 const validateSignIn = [
-    check('email')
+    body('email')
     .trim()
     .isEmail()
     .withMessage('Valid email is required'),
-    check('password')
+    body('password')
     .not()
     .isEmpty()
     .withMessage('Password is required'),
