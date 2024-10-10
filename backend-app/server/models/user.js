@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+// const bcrypt = require('bcrypt');
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   username: {
     type: String,
     required: true,
@@ -24,6 +26,27 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
   },
+
+  mealPlans: [
+    {
+      timeFrame: String,
+      targetCalories: Number,
+      diet: String,
+      exclude: String,
+      meals: [
+        {
+          id: Number,
+          title: String,
+          imageType: String,
+          readyInMinutes: Number,
+          servings: Number,
+          sourceUrl: String,
+          instructions: String,
+        },
+      ],
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
   name: {String,
   profilePicture: String,
   bio: String,
@@ -38,12 +61,12 @@ const userSchema = new mongoose.Schema({
 tokenBlacklist: [{ type: String }],
 });
 
-userSchema.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-  next();
-});
+// userSchema.pre("save", async function (next) {
+//   if (this.isModified("password")) {
+//     this.password = await bcrypt.hash(this.password, 10);
+//   }
+//   next();
+// });
 
 const User = mongoose.model("User", userSchema);
 
