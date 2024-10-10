@@ -24,16 +24,25 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
   },
-  profilePicture: {
-    type: String,
-  },
+  name: {String,
+  profilePicture: String,
+  bio: String,
+  location: String,
+  },  
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
   Ingredients: [{ type: String }],
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
 
-  tokenBlacklist: [{ type: String }],
+tokenBlacklist: [{ type: String }],
+});
+
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
 });
 
 const User = mongoose.model("User", userSchema);
