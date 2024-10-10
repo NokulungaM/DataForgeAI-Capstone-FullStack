@@ -1,12 +1,15 @@
 const axios = require('axios');
+const User = require('../models/user');
 
 // Replace with your actual API keys
 const spoonacularApiKey = '7bcd45f0726d4d54a5a87190622eb0e1';
 const geminiApiKey = 'AIzaSyDNcLk6T2OkECqSeTC6BOsePvOd7iwzHmU';
 
+// Generate Meal Plan
 exports.generateMealPlan = async (req, res) => {
   try {
     const { timeFrame, targetCalories, diet, exclude } = req.query;
+    const userId = req.user._id; // Assuming the user ID is attached via auth middleware
 
     if (!targetCalories || !diet) {
       return res.status(400).json({ error: 'Please provide targetCalories and diet.' });
@@ -61,17 +64,29 @@ exports.generateMealPlan = async (req, res) => {
         return {
           ...meal,
           instructions: 'No instructions available',
-        };
+        }; 
       }
     });
 
     // Wait for all meals to have their instructions generated
     const mealsWithInstructions = await Promise.all(mealPromises);
 
+    // Add meal plan to the user's profile
+    const user = await User.findById(userId);
+    user.mealPlans.push({
+      timeFrame,
+      targetCalories,
+      diet,
+      exclude,
+      meals: mealsWithInstructions,
+    });
+
+    await user.save();
+
     // Return the updated meal plan with instructions
     res.status(200).json({
-      ...mealPlan,
-      meals: mealsWithInstructions,
+      message: 'Meal plan generated and saved successfully!',
+      mealPlan: mealsWithInstructions,
     });
   } catch (error) {
     console.error('Error generating meal plan:', error);

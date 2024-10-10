@@ -9,8 +9,9 @@ const recipeRoutes = require('./routes/recipeRoutes'); // The refactored route t
 const adminRoutes = require('./routes/admin');
 const userRoutes = require('./routes/user');
 
-const mealPlan = require('./routes/mealPlanRoutes')
-const random = require('./routes/randomRoutes')
+const mealPlan = require('./routes/mealPlanRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+const random = require('./routes/randomRoutes');
 // CONFIGURING ENVIRONMENT VARIABLES
 require("dotenv").config();
 
@@ -41,6 +42,7 @@ app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
 app.use('/meal-plan',mealPlan);
 app.use('/random',random );
+app.use('/profile',profileRoutes);
 
 // STARTING THE SERVER AND CONNECTING TO MONGODB
 async function startServer() {
