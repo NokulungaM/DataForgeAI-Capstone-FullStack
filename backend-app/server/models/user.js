@@ -32,9 +32,9 @@ const userSchema = new mongoose.Schema({
   },  
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
   Ingredients: [{ type: String }],
-  postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
-  ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
-  commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+  postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe" , required: true },],
+  ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe" }],
+  commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe" }],
 
 tokenBlacklist: [{ type: String }],
 });
