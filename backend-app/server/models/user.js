@@ -28,6 +28,18 @@ const userSchema = new Schema({
     required: true,
     minlength: 8,
   },
+  nationality: {
+    type: String,
+    default: "",
+  },
+  dob: {
+    type: Date,
+    default: null,
+  },
+  profilePicture: {
+    type: String,
+    default: "",
+  },
 
   mealPlans: [
     {
@@ -49,18 +61,14 @@ const userSchema = new Schema({
       createdAt: { type: Date, default: Date.now },
     },
   ],
-  name: {String,
-  profilePicture: String,
-  bio: String,
-  location: String,
-  },  
+  name: { String, profilePicture: String, bio: String, location: String },
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
   Ingredients: [{ type: String }],
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
 
-tokenBlacklist: [{ type: String }],
+  tokenBlacklist: [{ type: String }],
 });
 
 // userSchema.pre("save", async function (next) {

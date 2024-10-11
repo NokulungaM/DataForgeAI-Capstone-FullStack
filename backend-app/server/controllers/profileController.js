@@ -3,15 +3,20 @@ const User = require('../models/user');
 // Get User Profile
 exports.getUserProfile = async (req, res) => {
   try {
-      console.log('User ID from request:', req.user.id);  // Log the user ID
-      const user = await User.findById(req.user.id);  // Ensure this matches the user ID from the token
-      if (!user) {
-          return res.status(404).json({ error: "User not found" });
-      }
-      res.json(user);
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const userData = {
+      email: user.email,
+      nationality: user.nationality,
+      dob: user.dob,
+      username: user.username,
+    };
+    res.json(userData);
   } catch (error) {
-      console.error('Error fetching user profile:', error);  // Log the error
-      res.status(500).json({ error: "Server error" });
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 

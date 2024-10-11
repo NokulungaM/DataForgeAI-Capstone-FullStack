@@ -4,6 +4,7 @@ const {
     registerUser,
     loginUser,
     getUserIngredients } = require("../controllers/userController");
+const { getUserProfile } = require("../controllers/profileController");
 const {  fetchAndDisplayRecipes } = require("../controllers/recipeController");
 const authMiddleware = require('../middleware/authMiddleware');
 const { validateSignUp , validateSignIn, signOut} = require('../controllers/authController');
@@ -13,6 +14,13 @@ router.post('/signup', validateSignUp , registerUser);
 
 // Route to log a user in (signin)
 router.post('/signin', validateSignIn, loginUser);
+
+//Route to access user Profile 
+router.get('/profile', authMiddleware, getUserProfile);
+
+// Route to update user Profile
+router.patch("/update-profile", authMiddleware, updateUserProfile);
+
 
 // Route to get user's ingredients 
 router.get('/ingredients', authMiddleware, getUserIngredients);

@@ -42,7 +42,7 @@ app.use('/admin', adminRoutes);
 app.use('/user', userRoutes);
 app.use('/meal-plan',mealPlan);
 app.use('/random',random );
-app.use('/profile',profileRoutes);
+// app.use('/profile',profileRoutes);
 
 // STARTING THE SERVER AND CONNECTING TO MONGODB
 async function startServer() {
