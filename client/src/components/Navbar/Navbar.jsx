@@ -62,9 +62,9 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage }) => 
                 </>
               ) : (
                 <>
-                  <a href="/about" className="hover:text-green-500">About us</a>
-                  <a href="/auth/signin" className="hover:text-green-500">Sign in</a>
-                  <a href="/auth/signup" className="hover:text-green-500">Sign up</a>
+                  {/* <a href="/about" className="hover:text-green-500">About us</a> */}
+                  <a href="/auth/signin" className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg">Sign in</a>
+                  {/* <a href="/auth/signup" className="hover:text-green-500">Sign up</a> */}
                 </>
               )}
             </>
