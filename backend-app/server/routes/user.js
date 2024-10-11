@@ -4,7 +4,7 @@ const {
     registerUser,
     loginUser,
     getUserIngredients } = require("../controllers/userController");
-const { getUserProfile } = require("../controllers/profileController");
+const { getUserProfile, updateUserProfile } = require("../controllers/profileController");
 const {  fetchAndDisplayRecipes } = require("../controllers/recipeController");
 const authMiddleware = require('../middleware/authMiddleware');
 const { validateSignUp , validateSignIn, signOut} = require('../controllers/authController');
