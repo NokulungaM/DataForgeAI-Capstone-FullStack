@@ -54,11 +54,9 @@ const userSchema = new Schema({
   bio: String,
   location: String,
   },  
-  meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
-  Ingredients: [{ type: String }],
-  postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe" , required: true },],
+  postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe", required: true },],
   ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe" }],
-  commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe" }],
+
 
 tokenBlacklist: [{ type: String }],
 });

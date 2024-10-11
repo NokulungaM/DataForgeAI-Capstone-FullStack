@@ -43,40 +43,40 @@ router.post("/addIngredients", authMiddleware, fetchAndDisplayRecipes);
 router.get("/all-recipes", authMiddleware, getAllRecipes);
 
 //Create a new recipe
-router.post("/user-recipes", authMiddleware("user"), createRecipe);
+router.post("/user-recipes", authMiddleware, createRecipe);
 
 // Get a single recipe by ID
-router.get("/find-recipe/:id", authMiddleware("user"), getOneRecipe);
+router.get("/find-recipe/:id", authMiddleware, getOneRecipe);
 
 // Like a recipe
-router.put("/recipes/:id/like", authMiddleware("user"), likeRecipe);
+router.patch("/recipes/:id/like", authMiddleware, likeRecipe);
 
 // Add a comment to a recipe
-router.post("/recipe/:id/comment", authMiddleware("user"), addComment);
+router.patch("/recipe/:id/comment", authMiddleware, addComment);
 
 // Update a comment in a recipe
-router.put(
+router.patch(
   "/recipes/:id/comments/:commentId",
-  authMiddleware("user"),
+  authMiddleware,
   updateComment
 );
 
 // Delete a comment from a recipe
 router.delete(
   "/recipes/:id/comments/:commentId",
-  authMiddleware("user"),
+  authMiddleware,
   deleteComment
 );
 
 // Delete a recipe by ID 
 router.delete(
   "/recipes/:id, deleteRecipe",
-  authMiddleware("user"),
+  authMiddleware,
   deleteRecipe
 );
 
 //Add recipe rating
-router.post("/recipes/:id/ratings", authMiddleware("user"), addRating);
+router.post("/recipes/:id/ratings", authMiddleware, addRating);
 
 //User signOut
 router.post("/signout", signOut)

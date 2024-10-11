@@ -2,6 +2,8 @@ const Recipe = require('../models/Recipe');
 const userRecipe = require('../models/userRecipe');
 const Comment = require('../models/Comments')
 const User = require('../models/user');
+const mongoose = require('mongoose');
+const { isValidObjectId } = mongoose;
 
 const { fetchAndSaveRecipes } = require('../services/recipeAPIService');
 
@@ -73,123 +75,290 @@ const getAllRecipes = async (req, res) => {
 // Get a single recipe by ID
 const getOneRecipe = async (req, res) => {
   const { id } = req.params;
+
   try {
     const recipe = await userRecipe.findById(id)
-      .populate("userId")
-      .populate("likes")
-      .populate("comments");
-    if (!recipe) return res.status(404).json({ message: "Recipe not found" })
+      .populate({
+        path: "userId",
+        select: "_id username", // Only retrieve user ID and username
+      })
+      .populate({
+        path: "likes",
+        select: "_id", // Only retrieve user ID for likes
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "userId",
+          select: "_id username", // Only retrieve user ID and username for comment authors
+        },
+      });
+
+    if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+
     res.json(recipe);
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    console.error("Error getting recipe:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 //update a comment 
-  const updateComment = async (req, res) => {
-    const { id } = req.params;
-    const commentId = req.params.comment._id;
-    const { text } = req.body;
-    try {
-      const recipe = await userRecipe.findById(id);
-      if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
-  
-      const comment = recipe.comments.id(commentId);
-      if (!comment) return res.status(404).json({ error: 'Comment not found' });
-  
-      comment.text = text;
-      await recipe.save();
-  
-      res.status(200).json(comment);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    };
+const updateComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  const { text } = req.body;
+
+  // Input validation
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid recipe ID" });
+  }
+  if (!isValidObjectId(commentId)) {
+    return res.status(400).json({ error: "Invalid comment ID" });
+  }
+
+  try {
+    // Find recipe and check existence
+    const recipe = await userRecipe.findById(id);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Find comment and check existence
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    // Verify comment belongs to recipe
+    if (!recipe.comments.includes(comment._id)) {
+      return res
+        .status(403)
+        .json({ error: "Comment does not belong to recipe" });
+    }
+
+    // Update comment text
+    comment.text = text;
+    await comment.save();
+
+    res.status(200).json(comment);
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
   
 // Delete a comment from a recipe
-  const deleteComment = async (req, res) => {
-    const { id } = req.params;
-    const commentId = req.params.comment._id;
-    try {
-      const recipe = await userRecipe.findById(id);
-      if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
-  
-      const comment = recipe.comments.id(commentId);
-      if (!comment) return res.status(404).json({ error: 'Comment not found' });
-  
-      recipe.comments.pull(commentId);
-      await recipe.save();
-  
-      res.status(200).json({ message: 'Comment deleted' });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    };
+const deleteComment = async (req, res) => {
+  const { id, commentId } = req.params;
+
+  // Input validation
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid recipe ID" });
+  }
+  if (!isValidObjectId(commentId)) {
+    return res.status(400).json({ error: "Invalid comment ID" });
+  }
+
+  try {
+    // Find recipe and check existence
+    const recipe = await userRecipe.findById(id);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Find comment and check existence
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    // Verify comment belongs to recipe
+    if (!recipe.comments.includes(comment._id)) {
+      return res
+        .status(403)
+        .json({ error: "Comment does not belong to recipe" });
+    }
+
+    // Verify comment owner
+    if (!req.user._id.equals(comment.userId)) {
+      return res.status(403).json({ error: "Unauthorized to delete comment" });
+    }
+
+    // Remove comment from recipe
+    recipe.comments.pull(comment._id);
+    await recipe.save();
+
+    // Delete comment
+    await comment.remove();
+
+    res.status(200).json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
   
 // Delete a recipe
-  const deleteRecipe = async (req, res) => {
-    const { id } = req.params;
-    try {
-      const recipe = await userRecipe.findByIdAndDelete(id);
-      if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
-      res.status(204).json({ message: 'Recipe deleted' });
-    } catch (error) {
-      console.error("Error deleting recipe:", error);
-      if (error.kind === 'ObjectId') {
-        return res.status(400).json({ message: 'Invalid recipe ID' });
-      }
-      res.status(500).json({ error: error.message });
+const deleteRecipe = async (req, res) => {
+  const { id } = req.params;
+
+  // Input validation
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid recipe ID" });
+  }
+
+  try {
+    // Find recipe and check existence
+    const recipe = await userRecipe.findById(id);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
     }
-  };
+
+    // Verify recipe ownership
+    if (!req.user._id.equals(recipe.userId)) {
+      return res.status(403).json({ error: "Unauthorized to delete recipe" });
+    }
+
+    // Remove comments associated with recipe
+    await Comment.deleteMany({ recipeId: id });
+
+    // Delete recipe
+    await recipe.remove();
+
+    res.status(200).json({ message: "Recipe deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting recipe:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 //Like a recipe 
 const likeRecipe = async (req, res) => {
   const { id } = req.params;
   const userId = req.user._id;
-  try {
-    const recipe = await userRecipe.findById(id);
-    if (!recipe) return res.status(404).json({ error: "Recipe not found" });
 
-    // Check if user already liked the recipe
-    if (recipe.likes.includes(userId)) {
-      return res.status(400).json({ message: "You already liked this recipe" });
+  // Input validation
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid recipe ID" });
+  }
+  if (!isValidObjectId(userId)) {
+    return res.status(401).json({ error: "Invalid user ID" });
+  }
+
+  try {
+    // Find recipe and check ownership
+    const recipe = await userRecipe.findById(id);
+
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
     }
 
-    recipe.likes.push(userId);
-    recipe.userId = userId; // Provide userId to satisfy validation
-    await recipe.save();
-    res.status(201).json(recipe);
+    // Prevent owners from liking their own recipes
+    if (recipe.userId.equals(userId)) {
+      return res.status(400).json({ error: "Cannot like your own recipe" });
+    }
+
+    // Toggle like
+    const isLiked = recipe.likes.includes(userId);
+    const update = isLiked
+      ? { $pull: { likes: userId } }
+      : { $addToSet: { likes: userId } };
+
+    const updatedRecipe = await userRecipe.findByIdAndUpdate(id, update, {
+      new: true,
+    });
+
+    const message = isLiked
+      ? "Recipe unliked successfully"
+      : "Recipe liked successfully";
+
+    res.status(200).json({
+      message,
+      recipe: updatedRecipe,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error("Error liking recipe:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
+
 // Add a comment to a recipe
   const addComment = async (req, res) => {
-    const { id } = req.params;
-    const { text } = req.body;
-    const userId = req.user_id;
-    try {
-      const recipe = await userRecipe.findById(id);
-      if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+  const { id } = req.params;
+  const { text } = req.body;
+  const userId = req.user._id;
 
-      const comment = new Comment({
-        text,
-        userId,
-        recipeId: id 
-      });
+  // Input validation
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid recipe ID" });
+  }
+  if (!text || typeof text !== "string") {
+    return res.status(400).json({ error: "Comment text is required" });
+  }
 
-      await comment.save();
-  
-      recipe.comments.push(comment.id);
-      await recipe.save();
+  try {
+    // Find recipe and check existence
+    const recipe = await userRecipe.findById(id);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
 
-      res.status(201).json(comment);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    };
-   
-}
+    // Create new comment
+    const comment = new Comment({
+      text,
+      userId,
+      recipeId: id,
+    });
+
+    // Save comment and update recipe
+    await comment.save();
+    recipe.comments.push(comment._id);
+    await recipe.save();
+
+    // Return created comment with recipe and user details
+    const populatedComment = await Comment.findById(comment._id)
+      .populate("userId", "name")
+      .populate("recipeId", "title");
+
+    res.status(201).json(populatedComment);
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+//Get Comments for a Recipe:
+
+const getRecipeComments = async (req, res) => {
+  const { id } = req.params;
+
+  // Input validation
+  if (!isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid recipe ID" });
+  }
+
+  try {
+    // Find recipe and check existence
+    const recipe = await userRecipe.findById(id);
+    if (!recipe) {
+      return res.status(404).json({ error: "Recipe not found" });
+    }
+
+    // Populate comments with user details
+    const populatedComments = await Comment.find({ recipeId: id })
+      .populate("userId", "name")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(populatedComments);
+  } catch (error) {
+    console.error("Error getting comments:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
  // Add or update a rating for a recipe
 const addRating = async (req, res) => {
@@ -236,6 +405,7 @@ module.exports = {
   fetchAndDisplayRecipes,
   likeRecipe,
   addComment,
+  getRecipeComments,
   addRating,
   createRecipe,
   getAllRecipes,
