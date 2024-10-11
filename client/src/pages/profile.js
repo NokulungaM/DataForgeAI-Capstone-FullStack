@@ -1,21 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Profile = () => {
-  // State variables for profile fields (excluding email)
-  const [isEditingNationality, setIsEditingNationality] = useState(false);
-  const [isEditingDOB, setIsEditingDOB] = useState(false);
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    nationality: "",
+    dob: "",
+  });
+  const [isEditing, setIsEditing] = useState({
+    nationality: false,
+    dob: false,
+  });
 
-  // Profile field values
-  const [email] = useState("john.doe@example.com"); // Email is not editable
-  const [nationality, setNationality] = useState("American");
-  const [dob, setDOB] = useState("01/01/1990");
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/user/profile", {
+          credentials: "include",
+        });
+        const userData = await response.json();
+        setUser(userData);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
-  // Function to handle saving the changes
-  const handleSave = (field) => {
-    if (field === "nationality") setIsEditingNationality(false);
-    if (field === "dob") setIsEditingDOB(false);
-
-    // Optionally, add logic to persist these changes (e.g., API call)
+  const handleSave = async (field) => {
+    try {
+      const updates = {};
+      if (field === "nationality") {
+        updates.nationality = user.nationality;
+        setIsEditing({ ...isEditing, nationality: false });
+      }
+      if (field === "dob") {
+        updates.dob = user.dob;
+        setIsEditing({ ...isEditing, dob: false });
+      }
+      const response = await fetch(
+        "http://localhost:3001/user/update-profile",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updates),
+          credentials: "include",
+        }
+      );
+      const updatedUserData = await response.json();
+      setUser(updatedUserData);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    }
   };
 
   return (
@@ -44,32 +82,35 @@ const Profile = () => {
               className="w-16 h-16 rounded-full mr-4"
             />
             <div>
-              <h2 className="text-2xl">John Doe</h2>
-              <p className="text-gray-400">New York, USA</p>
+              <h2 className="text-2xl">{user.username}</h2>
+              <p className="text-gray-400">{user.nationality}</p>
+              <p className="text-gray-400">{user.dob}</p>
             </div>
           </div>
 
           {/* Email (Non-Editable) */}
           <div className="flex justify-between">
-            <p>Email: {email}</p>
-            <span className="text-gray-500">Locked</span> {/* No Edit Option */}
+            <p>Email: {user.email}</p>
+            <span className="text-gray-500">Locked</span>
           </div>
 
           {/* Nationality (Editable) */}
           <div className="flex justify-between mt-4">
             <div>
-              {isEditingNationality ? (
+              {isEditing.nationality ? (
                 <input
                   type="text"
-                  value={nationality}
-                  onChange={(e) => setNationality(e.target.value)}
+                  value={user.nationality}
+                  onChange={(e) =>
+                    setUser({ ...user, nationality: e.target.value })
+                  }
                   className="bg-gray-700 text-white p-2 rounded"
                 />
               ) : (
-                <p>Nationality: {nationality}</p>
+                <p>Nationality: {user.nationality}</p>
               )}
             </div>
-            {isEditingNationality ? (
+            {isEditing.nationality ? (
               <button
                 className="text-green-500"
                 onClick={() => handleSave("nationality")}
@@ -80,7 +121,9 @@ const Profile = () => {
               <a
                 href="#"
                 className="text-blue-500"
-                onClick={() => setIsEditingNationality(true)}
+                onClick={() =>
+                  setIsEditing({ ...isEditing, nationality: true })
+                }
               >
                 Edit
               </a>
@@ -90,18 +133,18 @@ const Profile = () => {
           {/* Date of Birth (Editable) */}
           <div className="flex justify-between mt-4">
             <div>
-              {isEditingDOB ? (
+              {isEditing.dob ? (
                 <input
                   type="date"
-                  value={dob}
-                  onChange={(e) => setDOB(e.target.value)}
+                  value={user.dob}
+                  onChange={(e) => setUser({ ...user, dob: e.target.value })}
                   className="bg-gray-700 text-white p-2 rounded"
                 />
               ) : (
-                <p>Date of Birth: {dob}</p>
+                <p>Date of Birth: {user.dob}</p>
               )}
             </div>
-            {isEditingDOB ? (
+            {isEditing.dob ? (
               <button
                 className="text-green-500"
                 onClick={() => handleSave("dob")}
@@ -112,7 +155,7 @@ const Profile = () => {
               <a
                 href="#"
                 className="text-blue-500"
-                onClick={() => setIsEditingDOB(true)}
+                onClick={() => setIsEditing({ ...isEditing, dob: true })}
               >
                 Edit
               </a>

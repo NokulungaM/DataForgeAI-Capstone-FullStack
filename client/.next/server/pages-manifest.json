@@ -1,6 +1,9 @@
 {
-  "/_app": "pages/_app.js",
-  "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/_app": "pages/_app.js",
+  "/profile": "pages/profile.js",
+  "/auth/signin": "pages/auth/signin.js",
+  "/search": "pages/search.js",
   "/": "pages/index.js"
 }

@@ -8,10 +8,10 @@ exports.getUserProfile = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
     const userData = {
+      username: user.username,
       email: user.email,
       nationality: user.nationality,
       dob: user.dob,
-      username: user.username,
     };
     res.json(userData);
   } catch (error) {
