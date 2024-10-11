@@ -5,12 +5,14 @@ import Image from "next/image";
 const Card = ({ children }) => (
   <div
     style={{
-      border: "1px solid #e0e0e0",
-      borderRadius: "8px",
-      padding: "16px",
+      border: "8px",
+      padding: "12px",
       margin: "0 auto", // Center card contents
       boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Add a subtle shadow
       transition: "transform 0.2s", // Add a hover effect
+      maxWidth: "200px",
+      cursor: "pointer",
+      backgroundColor: "#4CAF50"
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.transform = "scale(1.02)";
@@ -18,6 +20,8 @@ const Card = ({ children }) => (
     onMouseLeave={(e) => {
       e.currentTarget.style.transform = "scale(1)";
     }}
+    onClick={onClick}
+    className="text-white"
   >
     {children}
   </div>
@@ -28,7 +32,7 @@ const Button = ({ children, onClick }) => (
     onClick={onClick}
     style={{
       padding: "10px 20px",
-      backgroundColor: "#0070f3",
+      backgroundColor: "#45a049",
       color: "white",
       border: "none",
       borderRadius: "4px",
@@ -37,10 +41,10 @@ const Button = ({ children, onClick }) => (
       transition: "background-color 0.2s",
     }}
     onMouseEnter={(e) => {
-      e.currentTarget.style.backgroundColor = "#005bb5"; // Darker shade on hover
+      e.currentTarget.style.backgroundColor = "#3d8b40"; // Darker shade on hover
     }}
     onMouseLeave={(e) => {
-      e.currentTarget.style.backgroundColor = "#0070f3"; // Original color
+      e.currentTarget.style.backgroundColor = "#45a049"; // Original color
     }}
   >
     {children}
@@ -71,16 +75,17 @@ const RecipeCard = ({ title, description, youtubeUrl, thumbnail, duration, diffi
 
   return (
     <Card>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Image src={thumbnail} alt={title} width={176} height={132} style={{ borderRadius: "8px" }} />
         <div>
-          <h2 style={{ margin: "0 0 8px 0" }}>{title}</h2>
-          <p style={{ margin: "0 0 12px 0" }}>{description}</p>
+          <h2 style={{ margin: "8px 0", fontsize: "16px", textAlign: "center" }}>{title}</h2>
+          {/* <p style={{ margin: "0 0 12px 0", fontsize: "14px" }}>{description}</p>
           <div>
             <Badge>{duration}</Badge>
             <Badge>{difficulty}</Badge>
-          </div>
+          </div> */}
         </div>
-        <Image src={thumbnail} alt={title} width={150} height={100} style={{ borderRadius: "8px" }} />
+        {/* <Image src={thumbnail} alt={title} width={100} height={75} style={{ borderRadius: "8px" }} /> */}
       </div>
       <Button onClick={() => window.open(youtubeUrl, "_blank")}>Watch on YouTube</Button>
     </Card>
@@ -126,3 +131,4 @@ const RecipeList = () => {
 };
 
 export default RecipeList;
+

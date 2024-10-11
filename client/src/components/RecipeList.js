@@ -22,13 +22,14 @@ const RecipeList = ({ recipes }) => {
     return <p>No recipes available. Try searching for specific ingredients.</p>;
   }
 
+
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {recipes.map((recipe, index) => (
           <div
             key={recipe.id || index}
-            className="bg-white text-black rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
+            className="bg-green-600 text-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
             onClick={() => openModal(recipe)}
           >
             <img
@@ -38,13 +39,8 @@ const RecipeList = ({ recipes }) => {
             />
             <div className="p-4">
               <h3 className="text-lg font-bold">{recipe.title}</h3>
-              <p className="mt-2 text-sm text-gray-700">
-                {recipe.instructions
-                  ? `${recipe.instructions.substring(0, 100)}...`
-                  : 'No instructions available.'}
-              </p>
               <button
-                className="mt-4 text-blue-500 font-semibold hover:underline"
+                className="mt-2 text-white font-semibold hover:underline"
                 onClick={() => openModal(recipe)}
               >
                 Read More
