@@ -32,8 +32,9 @@ app.use(cors({
 }));
 
 // MIDDLEWARES
-app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // USING ROUTES
 app.use('/api', recipeRoutes);  // Single route that handles fetching recipes from the DB or the API, processes them with Gemini, and saves them
