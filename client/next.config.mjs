@@ -7,6 +7,6 @@ export default {
     return config;
   },
   images: {
-    domains: ['i.ytimg.com'], // Add i.ytimg.com to the list of allowed domains
+    domains: ['i.ytimg.com', 'www.healthbenefitstimes.com'], // Add i.ytimg.com to the list of allowed domains
   },
 };

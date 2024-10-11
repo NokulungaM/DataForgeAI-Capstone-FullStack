@@ -2,7 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/meal-plan": "pages/meal-plan.js",
-  "/auth/signin": "pages/auth/signin.js"
+  "/": "pages/index.js"
 }
