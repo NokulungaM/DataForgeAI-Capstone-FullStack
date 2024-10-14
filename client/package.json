@@ -14,11 +14,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@headlessui/react": "^2.1.8",
-<<<<<<< HEAD
-    "@mui/material": "^6.1.3",
-=======
     "@heroicons/react": "^2.1.5",
->>>>>>> 16ddc7d641f250d6fb80d5ffe46f5c77c623155e
     "axios": "^1.7.7",
     "client": "file:",
     "cookies": "^0.9.1",

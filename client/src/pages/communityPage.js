@@ -1,11 +1,47 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import axios from "axios";
-import Link from "next/link";
-import  Cookies  from "cookies";
 
-const CommunityPage = ({ posts }) => {
-  // 'posts' is now received as a prop
+const CommunityPage = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    setToken(storedToken);
+  }, []);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (!token) {
+        setError('User is not authenticated');
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await axios.get("http://localhost:3001/user/community/all-recipes", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        setError("Error fetching posts. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [token]); // Fetch posts when token changes
+
+  if (loading) return <div>Loading community posts...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
@@ -16,14 +52,17 @@ const CommunityPage = ({ posts }) => {
         {posts.map((post) => (
           <div key={post._id} className="bg-white rounded shadow-md p-4">
             <h2 className="text-2xl font-bold">{post.title}</h2>
-            <div className="flex items-center mb-4">
-              <img
-                src={post.user.profilePicture}
-                alt="Profile"
-                className="w-12 h-12 rounded-full mr-4"
-              />
-              <p className="text-lg">{post.user.name}</p>
-            </div>
+            {/* Check if post.user exists */}
+            {post.user && ( 
+              <div className="flex items-center mb-4">
+                <img
+                  src={post.user.profilePicture || 'https://static.xx.fbcdn.net/rs/yog/r/HS5RyDQ5YRl.ico'} 
+                  alt="Profile"
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+                <p className="text-lg">{post.user.name}</p>
+              </div>
+            )}
             <p className="text-gray-600">{post.instructions}</p>
             <h3 className="text-xl font-bold mb-2">Ingredients:</h3>
             <ul>
@@ -76,42 +115,5 @@ const CommunityPage = ({ posts }) => {
     </div>
   );
 };
-
-export async function getServerSideProps({ req, res }) {
-  try {
-    const cookies = new Cookies(req, res);
-    const cookie = cookies.get("auth-token");
-
-    if (!cookie) {
-      // Redirect if not authenticated
-      return {
-        redirect: {
-          destination: "/auth/signin",
-          permanent: false,
-        },
-      };
-    }
-
- const response = await axios.get("http://localhost:3001/user/all-recipes", {
-      headers: {
-        Authorization: `Bearer ${cookie}`,
-      },
-    });
-
-    return {
-      props: {
-        posts: response.data,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    // Handle error, e.g., return an error page or empty posts
-    return {
-      props: {
-        posts: [],
-      }
-    }
-}};
-
 
 export default CommunityPage;
