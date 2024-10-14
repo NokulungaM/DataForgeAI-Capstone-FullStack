@@ -1,9 +1,11 @@
 {
   "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
+  "/_error": "pages/_error.js",
   "/landingPage": "pages/landingPage.js",
-  "/auth/signin": "pages/auth/signin.js"
+  "/": "pages/index.js",
+  "/auth/signin": "pages/auth/signin.js",
+  "/meal-plan": "pages/meal-plan.js",
+  "/search": "pages/search.js",
+  "/profile": "pages/profile.js"
 }

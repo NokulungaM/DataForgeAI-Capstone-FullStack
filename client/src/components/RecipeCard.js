@@ -2,7 +2,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 // Define the Card, Button, and Badge components within the same file
-const Card = ({ children }) => (
+const Card = ({ children, onClick }) => (
   <div
     style={{
       border: "8px",
@@ -12,7 +12,7 @@ const Card = ({ children }) => (
       transition: "transform 0.2s", // Add a hover effect
       maxWidth: "200px",
       cursor: "pointer",
-      backgroundColor: "#4CAF50"
+      backgroundColor: "#4CAF50",
     }}
     onMouseEnter={(e) => {
       e.currentTarget.style.transform = "scale(1.02)";
@@ -20,7 +20,7 @@ const Card = ({ children }) => (
     onMouseLeave={(e) => {
       e.currentTarget.style.transform = "scale(1)";
     }}
-    onClick={onClick}
+    onClick={onClick} // Use the onClick prop passed from parent component
     className="text-white"
   >
     {children}
@@ -74,18 +74,19 @@ const RecipeCard = ({ title, description, youtubeUrl, thumbnail, duration, diffi
   };
 
   return (
-    <Card>
+    <Card onClick={togglePlayPause}> {/* Pass the onClick prop to Card */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Image src={thumbnail} alt={title} width={176} height={132} style={{ borderRadius: "8px" }} />
+        <Image src={thumbnail} alt={title} width={176} height={132} style={{ borderRadius: "8px" }} />
         <div>
-          <h2 style={{ margin: "8px 0", fontsize: "16px", textAlign: "center" }}>{title}</h2>
-          {/* <p style={{ margin: "0 0 12px 0", fontsize: "14px" }}>{description}</p>
+          <h2 style={{ margin: "8px 0", fontSize: "16px", textAlign: "center" }}>{title}</h2>
+          {/* Uncomment the following lines if you want to display the description and badges
+          <p style={{ margin: "0 0 12px 0", fontSize: "14px" }}>{description}</p>
           <div>
             <Badge>{duration}</Badge>
             <Badge>{difficulty}</Badge>
-          </div> */}
+          </div>
+          */}
         </div>
-        {/* <Image src={thumbnail} alt={title} width={100} height={75} style={{ borderRadius: "8px" }} /> */}
       </div>
       <Button onClick={() => window.open(youtubeUrl, "_blank")}>Watch on YouTube</Button>
     </Card>
@@ -103,8 +104,8 @@ const RecipeList = () => {
       difficulty: "Medium",
     },
     {
-      title: "Spicy tomato penne pasta",
-      description: "Spicy penne Arrabiata.",
+      title: "Spicy Tomato Penne Pasta",
+      description: "Spicy Penne Arrabiata.",
       youtubeUrl: "https://www.youtube.com/watch?v=1IszT_guI08",
       thumbnail: "https://i.ytimg.com/vi/1IszT_guI08/maxresdefault.jpg",
       duration: "45 min",
@@ -131,4 +132,3 @@ const RecipeList = () => {
 };
 
 export default RecipeList;
-
