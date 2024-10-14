@@ -54,11 +54,19 @@ const userSchema = new Schema({
   bio: String,
   location: String,
   },  
+<<<<<<< HEAD
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
   Ingredients: [{ type: String }],
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
+=======
+  postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe", required: true },],
+  ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "userRecipe" }],
+
+
+tokenBlacklist: [{ type: String }],
+>>>>>>> main
 });
 
 // userSchema.pre("save", async function (next) {

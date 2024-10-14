@@ -15,9 +15,8 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage }) => 
     <nav className="bg-black text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => router.push('/')}>
-          <span className="text-5xl">🍽️</span>
-          <span className="text-xl font-bold">DishDash</span>
+        <div className="flex items-center cursor-pointer" onClick={() => router.push('/')}>
+          <img src="/DishDashOfficialLogo.png" alt="DishDash Logo" className="h-28 w-auto" /> {/* Further Increased Logo Size */}
         </div>
 
         {/* Desktop Menu */}
@@ -37,7 +36,6 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage }) => 
           ) : isSearchPage ? (
             // Search page buttons
             <>
-              
               <a href="/meal-plan" className="hover:text-green-500">Generate meal plan</a>
               <a href="/community" className="hover:text-green-500">Community</a>
               <a href="/profile" className="hover:text-green-500">Profile</a>
@@ -62,9 +60,7 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage }) => 
                 </>
               ) : (
                 <>
-                  <a href="/about" className="hover:text-green-500">About us</a>
-                  <a href="/auth/signin" className="hover:text-green-500">Sign in</a>
-                  <a href="/auth/signup" className="hover:text-green-500">Sign up</a>
+                  <a href="/auth/signin" className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg">Sign in</a>
                 </>
               )}
             </>
@@ -129,3 +125,4 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage }) => 
 };
 
 export default Navbar;
+

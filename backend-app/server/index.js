@@ -12,6 +12,7 @@ const userRoutes = require('./routes/user');
 const mealPlan = require('./routes/mealPlanRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const random = require('./routes/randomRoutes');
+const contactRoutes = require('./routes/contactRoutes')
 // CONFIGURING ENVIRONMENT VARIABLES
 require("dotenv").config();
 
@@ -34,8 +35,9 @@ app.use(cors({
 
 
 // MIDDLEWARES
-app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 // USING ROUTES
 app.use('/api', recipeRoutes);  // Single route that handles fetching recipes from the DB or the API, processes them with Gemini, and saves them
