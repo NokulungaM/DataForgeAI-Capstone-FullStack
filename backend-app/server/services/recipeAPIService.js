@@ -1,8 +1,8 @@
 const axios = require('axios');
-const googleTTS = require('google-tts-api'); // Ensure you have this package installed
-const Recipe = require('../models/Recipe'); // Ensure the correct model path
+const googleTTS = require('google-tts-api'); 
+const Recipe = require('../models/Recipe'); 
 
-// Replace this with your actual Gemini API key
+
 const geminiApiKey = 'AIzaSyDNcLk6T2OkECqSeTC6BOsePvOd7iwzHmU';
 const spoonacularApiKey = '7bcd45f0726d4d54a5a87190622eb0e1';
 
