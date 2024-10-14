@@ -1,7 +1,9 @@
 {
+  "/_error": "pages/_error.js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
-  "/_error": "pages/_error.js",
+  "/search": "pages/search.js",
   "/": "pages/index.js",
-  "/profile": "pages/profile.js"
+  "/auth/signin": "pages/auth/signin.js",
+  "/communityPage": "pages/communityPage.js"
 }

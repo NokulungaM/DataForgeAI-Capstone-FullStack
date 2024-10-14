@@ -1,6 +1,9 @@
 // REQUIRED PACKAGES
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
+
 // CONNECTING TO MONGODB
 const { connectToMongoDB } = require("./db/connection");
 const recipeRoutes = require('./routes/recipeRoutes'); // The refactored route that handles everything (fetching, processing, saving, and displaying)
@@ -31,9 +34,12 @@ app.use(cors({
   credentials: true,
 }));
 
+
 // MIDDLEWARES
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
 
 
 // USING ROUTES

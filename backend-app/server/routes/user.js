@@ -26,10 +26,10 @@ const {
 
 
 // Route to sign up a new user
-router.post('/signup', validateSignUp , registerUser);
+router.post('/signup', validateSignUp, registerUser );
 
 // Route to log a user in (signin)
-router.post('/signin', validateSignIn, loginUser);
+router.post('/signin', validateSignIn, loginUser) ;
 
 // Route to get user's ingredients 
 router.get('/ingredients', authMiddleware, getUserIngredients);
@@ -40,23 +40,23 @@ router.post("/addIngredients", authMiddleware, fetchAndDisplayRecipes);
 
 
 // Route to get all recipes
-router.get("/all-recipes", authMiddleware, getAllRecipes);
+router.get("/community/all-recipes", authMiddleware, getAllRecipes);
 
 //Create a new recipe
 router.post("/user-recipes", authMiddleware, createRecipe);
 
 // Get a single recipe by ID
-router.get("/find-recipe/:id", authMiddleware, getOneRecipe);
+router.get("community/find-recipe/:id", authMiddleware, getOneRecipe);
 
 // Like a recipe
-router.patch("/recipes/:id/like", authMiddleware, likeRecipe);
+router.patch("community/recipes/:id/like", authMiddleware, likeRecipe);
 
 // Add a comment to a recipe
-router.patch("/recipe/:id/comment", authMiddleware, addComment);
+router.patch("community/recipe/:id/comment", authMiddleware, addComment);
 
 // Update a comment in a recipe
 router.patch(
-  "/recipes/:id/comments/:commentId",
+  "community/recipes/:id/comments/:commentId",
   authMiddleware,
   updateComment
 );
@@ -70,7 +70,7 @@ router.delete(
 
 // Delete a recipe by ID 
 router.delete(
-  "/recipes/:id, deleteRecipe",
+  "community/recipes/:id, deleteRecipe",
   authMiddleware,
   deleteRecipe
 );

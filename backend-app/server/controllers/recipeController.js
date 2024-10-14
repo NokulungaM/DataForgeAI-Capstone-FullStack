@@ -43,11 +43,12 @@ const fetchAndDisplayRecipes = async (req, res) => {
 
 //Create a new recipe
 const createRecipe = async (req, res) => {
-  const { title, ingredients, instructions } = req.body;
+  const { title, ingredients, instructions, recipeImage } = req.body;
   const recipe = new userRecipe({
     title,
     ingredients,
     instructions,
+    recipeImage, 
     userId : req.user._id
   });
   try {
@@ -61,10 +62,12 @@ const createRecipe = async (req, res) => {
 //Get all recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await userRecipe.find()
-      .populate("userId")
-      .populate("likes")
-      .populate("comments");
+
+    const recipes = await userRecipe
+      .find()
+      .populate("userId", "username")
+      .populate("likes", "userId")
+      .populate("comments", "userId text");
     if (!recipes) return res.status(404).json({ message: "No recipes found" });
     res.json(recipes);
   } catch (error) {
@@ -320,7 +323,7 @@ const likeRecipe = async (req, res) => {
 
     // Return created comment with recipe and user details
     const populatedComment = await Comment.findById(comment._id)
-      .populate("userId", "name")
+      .populate("userId", "username")
       .populate("recipeId", "title");
 
     res.status(201).json(populatedComment);
