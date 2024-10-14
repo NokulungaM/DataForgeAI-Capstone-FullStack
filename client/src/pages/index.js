@@ -39,9 +39,9 @@ const HomePage = () => {
       Unleash your inner chef with recipes tailored to your ingredients.
     </p>
     <div className="flex justify-center space-x-4 mb-8">
-      <button className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg">
+      <a href="/aboutUs" className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg">
         About us
-      </button>
+      </a>
       <a
         href="/auth/signup"
         className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg"

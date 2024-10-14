@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const ingredientSchema = new mongoose.Schema({
-  // id: {
-  //   type: Number,
-  //   required: true,
-  // },
+  id: {
+    type: Number,
+    required: true,
+  },
+
   amount: {
     type: Number,
     required: true,
@@ -77,19 +78,7 @@ const recipeSchema = new mongoose.Schema({
   type: [String],
   required: true,
   },
-  // userId : {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'User',
-  //   required: true,
-  // },
-  // likes : [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'User',
-  // }],
-  // comments : [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'Comment',
-  // }] 
+  ttsUrl: { type: String, default: null },
 });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);

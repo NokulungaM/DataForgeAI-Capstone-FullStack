@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
+import axios from 'axios';
 
 const Search = () => {
   const [recipes, setRecipes] = useState([]);
@@ -7,18 +8,37 @@ const Search = () => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentAudio, setCurrentAudio] = useState(null); // Track current audio
+  const [isPlaying, setIsPlaying] = useState(false); // Track playing state
+  const [audioQueue, setAudioQueue] = useState([]); // Queue for multiple audio URLs
+  const [audioIndex, setAudioIndex] = useState(0); // Current index in the audio queue
 
   const handleSearch = async () => {
     if (!query.trim()) return; // Avoid empty queries
 
     setLoading(true);
+    setError(null); // Reset any previous error
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      setError('User not authenticated');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch(`http://localhost:3001/api/recipes?ingredients=${query}`);
-      if (!response.ok) throw new Error('Failed to fetch recipes');
-      const data = await response.json();
-      setRecipes(data);
+      const response = await axios.get(`http://localhost:3001/api/recipes?ingredients=${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status !== 200) throw new Error('Failed to fetch recipes');
+      setRecipes(response.data);
     } catch (error) {
       console.error('Error fetching recipes:', error);
+      setError('Failed to fetch recipes. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -32,7 +52,69 @@ const Search = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedRecipe(null);
+    if (currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+      setIsPlaying(false);
+    }
   };
+
+  const playAudioInstructions = async (recipe) => {
+    if (recipe.ttsUrl) {
+      const ttsUrls = recipe.ttsUrl.split(', ');
+      setAudioQueue(ttsUrls); // Store the audio URLs
+      setAudioIndex(0); // Start from the first URL
+      playNextAudio(0, ttsUrls); // Play the first audio
+    }
+  };
+
+  const playNextAudio = (index, ttsUrls) => {
+    if (index < ttsUrls.length) {
+      const url = ttsUrls[index];
+      const proxyUrl = `http://localhost:3001/proxy-tts?url=${encodeURIComponent(url)}`;
+
+      axios.get(proxyUrl, { responseType: 'arraybuffer' })
+        .then((response) => {
+          const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+          const audio = new Audio(URL.createObjectURL(audioBlob));
+          setCurrentAudio(audio); // Track the current audio
+
+          audio.play();
+          setIsPlaying(true);
+
+          audio.addEventListener('ended', () => {
+            setIsPlaying(false);
+            playNextAudio(index + 1, ttsUrls); // Play next audio when this one ends
+          });
+        })
+        .catch((error) => {
+          console.error('Error playing audio:', error);
+          playNextAudio(index + 1, ttsUrls); // Skip to next if there's an error
+        });
+    }
+  };
+
+  const toggleAudioPlayback = () => {
+    if (currentAudio) {
+      if (isPlaying) {
+        currentAudio.pause();
+        setIsPlaying(false);
+      } else {
+        currentAudio.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Clean up audio when the component unmounts
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        setCurrentAudio(null);
+      }
+    };
+  }, [currentAudio]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-800 to-blue-700 text-white p-6">
@@ -54,6 +136,7 @@ const Search = () => {
             Find
           </button>
         </div>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
 
       {/* Results Section */}
@@ -107,6 +190,24 @@ const Search = () => {
               <p className="mt-2 text-gray-700 whitespace-pre-wrap">
                 {selectedRecipe.instructions || 'No instructions available.'}
               </p>
+              {selectedRecipe.ttsUrl && (
+                <>
+                  <button
+                    className="mt-4 bg-teal-500 text-white py-2 px-4 rounded hover:bg-teal-600"
+                    onClick={() => playAudioInstructions(selectedRecipe)}
+                  >
+                    {isPlaying ? 'Pause Audio Instructions' : 'Play Audio Instructions'}
+                  </button>
+                  {currentAudio && (
+                    <button
+                      className="ml-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                      onClick={toggleAudioPlayback}
+                    >
+                      {isPlaying ? 'Pause' : 'Resume'}
+                    </button>
+                  )}
+                </>
+              )}
             </>
           )}
         </div>
