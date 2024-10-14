@@ -12,6 +12,7 @@ const userRoutes = require('./routes/user');
 const mealPlan = require('./routes/mealPlanRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const random = require('./routes/randomRoutes');
+const contactRoutes = require('./routes/contactRoutes')
 // CONFIGURING ENVIRONMENT VARIABLES
 require("dotenv").config();
 
@@ -44,6 +45,7 @@ app.use('/user', userRoutes);
 app.use('/meal-plan',mealPlan);
 app.use('/random',random );
 app.use('/profile',profileRoutes);
+app.use('/contact',contactRoutes);
 
 // STARTING THE SERVER AND CONNECTING TO MONGODB
 async function startServer() {
