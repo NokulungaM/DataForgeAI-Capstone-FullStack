@@ -59,8 +59,6 @@ const userSchema = new Schema({
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   ratedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
-
-tokenBlacklist: [{ type: String }],
 });
 
 // userSchema.pre("save", async function (next) {

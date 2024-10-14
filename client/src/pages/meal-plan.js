@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Dialog } from '@headlessui/react';
 
@@ -28,38 +28,63 @@ export default function MealPlan() {
   const [mealPlan, setMealPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState(null);
+  const [token, setToken] = useState(null);
+  
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    console.log('Token from localStorage:', storedToken); // Check the token value
+    setToken(storedToken); // Set the token in the state
+  }, []);
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!timeFrame || !targetCalories || !diet) {
       setError('Please fill in all fields');
       return;
     }
-
+  
+    // No need for storedToken, just use the token from state
+    console.log('Token from state:', token); // Log the token directly from the state
+  
+    if (!token) {
+      setError('User is not authenticated');
+      return;
+    }
+  
     try {
       setLoading(true);
       setError(null);
-
+  
       const response = await axios.get(`http://localhost:3001/meal-plan/meal-plan`, {
         params: {
           timeFrame,
           targetCalories,
           diet,
         },
+        headers: {
+          Authorization: `Bearer ${token}`, // Use the state `token` here
+        },
       });
-
+  
       setMealPlan(response.data);
     } catch (err) {
-      console.error('Error fetching meal plan:', err);
-      setError('Error fetching meal plan. Please try again.');
-    } finally {
-      setLoading(false);
+      if (err.response && err.response.status === 401) {
+        // Token expired or invalid, handle re-authentication
+        console.error('Token expired or invalid. Please log in again.');
+        setError('Session expired. Please log in again.');
+        // Optionally, redirect the user to the login page
+      } else {
+        setError('Error fetching meal plan. Please try again.');
+      }
+    
     }
-  };
+  }
+  
 
   const openModal = (meal) => {
     setSelectedMeal(meal);
@@ -101,24 +126,23 @@ export default function MealPlan() {
             />
           </div>
 
-        {/* Diet input */}
-        <div>
+          {/* Diet input */}
+          <div>
             <label className="block text-gray-700">Diet:</label>
             <input
-                type="text"
-                list="dietOptions"
-                value={diet}
-                onChange={(e) => setDiet(e.target.value)}
-                placeholder="Enter your diet preference or select an option"
-                className="w-full p-2 border rounded"
+              type="text"
+              list="dietOptions"
+              value={diet}
+              onChange={(e) => setDiet(e.target.value)}
+              placeholder="Enter your diet preference or select an option"
+              className="w-full p-2 border rounded"
             />
             <datalist id="dietOptions">
-                <option value="Vegetarian" />
-                <option value="Vegan" />
-                <option value="Paleo" />
+              <option value="Vegetarian" />
+              <option value="Vegan" />
+              <option value="Paleo" />
             </datalist>
-        </div>
-
+          </div>
 
           {/* Submit button */}
           <Button type="submit" className="w-full" disabled={loading}>
@@ -142,19 +166,18 @@ export default function MealPlan() {
       )}
 
       {/* Meal Plan display */}
-      {mealPlan && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-          {mealPlan.meals.map((meal, index) => (
-            <Card key={index} onClick={() => openModal(meal)}>
-              <img src={meal.image} alt={meal.title} className="w-full h-48 object-cover rounded-md mb-4" />
-              <h3 className="text-lg font-bold">{meal.title}</h3>
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>Meal Type:</strong> {index === 0 ? 'Breakfast' : index === 1 ? 'Lunch' : 'Dinner'}
-              </p>
-            </Card>
-          ))}
-        </div>
-      )}
+      {mealPlan && mealPlan.mealPlan && (
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+    {mealPlan.mealPlan.map((meal, index) => (
+      <Card key={index} onClick={() => openModal(meal)}>
+        <img src={meal.image} alt={meal.title} className="w-full h-48 object-cover rounded-md mb-4" />
+        <h3 className="text-lg font-bold">{meal.title}</h3>
+      </Card>
+    ))}
+  </div>
+)}
+
+
 
       {/* Modal for showing detailed meal information */}
       <Dialog
