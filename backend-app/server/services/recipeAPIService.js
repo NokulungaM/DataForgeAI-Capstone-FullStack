@@ -1,16 +1,39 @@
-// services/recipeAPIService.js
-
 const axios = require('axios');
-const Recipe = require('../models/Recipe'); // Ensure the correct model path
+const googleTTS = require('google-tts-api'); 
+const Recipe = require('../models/Recipe'); 
 
-// Replace this with your actual Gemini API key
+
 const geminiApiKey = 'AIzaSyDNcLk6T2OkECqSeTC6BOsePvOd7iwzHmU';
 const spoonacularApiKey = '7bcd45f0726d4d54a5a87190622eb0e1';
+
+// Function to generate TTS URLs for long texts
+const generateTTSUrls = (text) => {
+  if (!text || typeof text !== 'string' || text.trim().length === 0) {
+    console.error('Invalid text input for TTS:', text);
+    return null;
+  }
+
+  try {
+    console.log('Generating TTS URLs for:', text); // Log the text being sent for TTS
+
+    // Use getAllAudioUrls to handle long text
+    const urls = googleTTS.getAllAudioUrls(text, {
+      lang: 'en',
+      slow: false,
+      host: 'https://translate.google.com',
+    });
+
+    return urls; // Return array of TTS URLs
+  } catch (error) {
+    console.error('Error generating TTS URLs:', error);
+    return null;
+  }
+};
 
 // Function to fetch and save random recipes
 const fetchAndSaveRandomRecipes = async () => {
   try {
-    const apiUrl = `https://api.spoonacular.com/recipes/random`;
+    const apiUrl = 'https://api.spoonacular.com/recipes/random';
     
     // Fetch random recipes from Spoonacular API
     const response = await axios.get(apiUrl, {
@@ -49,14 +72,25 @@ const fetchAndSaveRandomRecipes = async () => {
           }
         );
 
+        // Log the full response for debugging
+        console.log('Gemini API Response:', geminiResponse.data);
+
         // Extract instructions from Gemini API response
         const contentParts = geminiResponse.data.candidates[0]?.content?.parts || [];
         const instructions = contentParts.map(part => part.text).join(' ') || 'No instructions available';
 
         // Clean up the instructions
-        const cleanedInstructions = instructions.replace(/\*\*/g, '').replace(/\n/g, ' ');
+        const cleanedInstructions = instructions.replace(/\*\*/g, '').replace(/\n/g, ' ').trim();
+        console.log('Cleaned Instructions:', cleanedInstructions); // Log cleaned instructions
 
-        // Add instructions to the recipe and save to MongoDB
+        // Generate TTS URLs for the instructions
+        const ttsUrls = generateTTSUrls(cleanedInstructions);
+        console.log('Generated TTS URLs:', ttsUrls); // Log the generated TTS URLs
+
+        // Handle TTS URLs (store all or just the first one, depending on your needs)
+        newRecipe.ttsUrl = ttsUrls ? ttsUrls.map(urlObj => urlObj.url).join(', ') : null;
+
+        // Add instructions and TTS URL to the recipe and save to MongoDB
         newRecipe.instructions = cleanedInstructions;
         await newRecipe.save();
 
@@ -64,7 +98,8 @@ const fetchAndSaveRandomRecipes = async () => {
         return {
           title: recipe.title,
           image: recipe.image,
-          instructions: cleanedInstructions
+          instructions: cleanedInstructions,
+          ttsUrl: newRecipe.ttsUrl, // Include TTS URLs in the returned data
         };
       } catch (error) {
         console.error('Error processing random recipe:', error);
@@ -87,7 +122,7 @@ const fetchAndSaveRandomRecipes = async () => {
 // Function to fetch recipes from the API, process them with Gemini, and save to the database
 const fetchAndSaveRecipes = async (ingredients) => {
   try {
-    const apiUrl = `https://api.spoonacular.com/recipes/findByIngredients`;
+    const apiUrl = 'https://api.spoonacular.com/recipes/findByIngredients';
 
     // Fetch recipes from Spoonacular API
     const response = await axios.get(apiUrl, {
@@ -147,14 +182,25 @@ const fetchAndSaveRecipes = async (ingredients) => {
           }
         );
 
+        // Log the full response for debugging
+        console.log('Gemini API Response:', geminiResponse.data);
+
         // Extract instructions from Gemini API response
         const contentParts = geminiResponse.data.candidates[0]?.content?.parts || [];
         const instructions = contentParts.map(part => part.text).join(' ') || 'No instructions available';
 
         // Clean up the instructions
-        const cleanedInstructions = instructions.replace(/\*\*/g, '').replace(/\n/g, ' ');
+        const cleanedInstructions = instructions.replace(/\*\*/g, '').replace(/\n/g, ' ').trim();
+        console.log('Cleaned Instructions:', cleanedInstructions); // Log cleaned instructions
 
-        // Add instructions to the recipe and save to MongoDB
+        // Generate TTS URLs for the instructions
+        const ttsUrls = generateTTSUrls(cleanedInstructions);
+        console.log('Generated TTS URLs:', ttsUrls); // Log the generated TTS URLs
+
+        // Handle TTS URLs (store all or just the first one, depending on your needs)
+        newRecipe.ttsUrl = ttsUrls ? ttsUrls.map(urlObj => urlObj.url).join(', ') : null;
+
+        // Add instructions and TTS URL to the recipe and save to MongoDB
         newRecipe.instructions = cleanedInstructions;
         await newRecipe.save();
 
@@ -162,7 +208,8 @@ const fetchAndSaveRecipes = async (ingredients) => {
         return {
           title: recipe.title,
           image: recipe.image,
-          instructions: cleanedInstructions
+          instructions: cleanedInstructions,
+          ttsUrl: newRecipe.ttsUrl, // Include TTS URLs in the returned data
         };
       } catch (error) {
         console.error('Error processing recipe:', error);

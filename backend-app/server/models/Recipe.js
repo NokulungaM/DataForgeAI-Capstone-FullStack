@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
 
 const ingredientSchema = new mongoose.Schema({
+<<<<<<< HEAD
+  id: {
+    type: Number,
+    required: true,
+  },
+
+=======
   // id: {
   //   type: Number,
   //   required: true,
   // },
+>>>>>>> main
   amount: {
     type: Number,
     required: true,
@@ -77,6 +85,9 @@ const recipeSchema = new mongoose.Schema({
   type: [String],
   required: true,
   },
+<<<<<<< HEAD
+  ttsUrl: { type: String, default: null },
+=======
   // userId : {
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: 'User',
@@ -90,6 +101,7 @@ const recipeSchema = new mongoose.Schema({
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: 'Comment',
   // }] 
+>>>>>>> main
 });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);

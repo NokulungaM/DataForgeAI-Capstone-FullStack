@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-
 const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -9,12 +8,10 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
 
     if (!username || !password) {
       setError("Please fill in both fields");
@@ -22,9 +19,7 @@ const SignIn = () => {
       return;
     }
 
-
     const userData = { username, password };
-
 
     try {
       const response = await fetch("http://localhost:3001/user/signin", {
@@ -33,13 +28,15 @@ const SignIn = () => {
         body: JSON.stringify(userData),
       });
 
-
       const data = await response.json();
-
 
       if (response.ok) {
         console.log("Sign-in successful", data);
-        router.push("/search"); // Navigate to a dashboard or desired page on successful sign-in
+
+        // Store the JWT token in localStorage
+        localStorage.setItem("token", data.token); // Make sure 'data.token' contains the JWT
+
+        router.push("/landingPage"); // Navigate to a dashboard or desired page on successful sign-in
       } else {
         setError(data.message || "Invalid credentials. Please try again.");
       }
@@ -50,7 +47,6 @@ const SignIn = () => {
     }
   };
 
-
   return (
     <div className="signin-wrapper">
       <div className="signin-container">
@@ -58,7 +54,6 @@ const SignIn = () => {
           <h1>Welcome Back to DishDash!👋</h1>
           <p>Sign in to access your favorite recipes!</p>
         </div>
-
 
         <div className="form-container">
           <h2>Sign In</h2>
@@ -96,7 +91,6 @@ const SignIn = () => {
           </form>
         </div>
       </div>
-
 
       {/* Inline Styles using JSX */}
       <style jsx>{`
@@ -219,6 +213,5 @@ const SignIn = () => {
     </div>
   );
 };
-
 
 export default SignIn;

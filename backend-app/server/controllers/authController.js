@@ -62,20 +62,11 @@ exports.signUp = async (req, res) => {
             return res.status(400).json({ error: 'Username already in use' });
         }
 
-        // Salt and Hash password before saving
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const user = new User({
-            username,
-            email,
-            password: hashedPassword,
-            ...rest
-        });
-
-        await user.save();
+    
+       
 
         // Generate JWT token
-        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
         res.status(201).json({ token, message: 'User registered successfully' });
     } catch (error) {
@@ -104,14 +95,10 @@ exports.signUp = async (req, res) => {
                  return res.status(400).json({ error: 'Invalid login credentials' });
              }
 
-            // Compare passwords
-             const isMatch = await bcrypt.compare(password, user.password);
-             if (!isMatch) {
-                 return res.status(400).json({ error: 'Invalid login credentials' });
-             }
+           
 
             // Generate JWT token
-            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
             res.status(200).json({ token, message: 'Signed in successfully' });
             } catch (error) {
