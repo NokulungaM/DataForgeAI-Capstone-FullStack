@@ -1,0 +1,69 @@
+{
+    "navbar": {
+      "searchRecipes": "Search 4 recipes",
+      "generateMealPlan": "Generate meal plan",
+      "community": "Community",
+      "profile": "Profile",
+      "signOut": "Sign-out",
+      "aboutUs": "About Us",
+      "contact": "Contact",
+      "signIn": "Sign in",
+      "signUp": "Sign Up"
+    },
+    "footer": {
+      "discoverRecipes": "Discover new recipes tailored to your taste!",
+      "dishDash": "DishDash",
+      "help": "Help",
+      "faq": "FAQ",
+      "howToArticles": "How-to articles",
+      "contactSupport": "Contact support"
+    },
+    "recipeCard": {
+      "watchOnYouTube": "Watch on YouTube"
+    },
+    "recipeList": {
+      "noRecipes": "No recipes available. Try searching for specific ingredients.",
+      "readMore": "Read More",
+      "close": "Close",
+      "loading": "Loading..."
+    },
+    "landingPage": {
+      "discoverDeliciousRecipes": "Discover Delicious Recipes",
+      "watchLearnCook": "Watch, learn, and cook your favorite dishes.",
+      "mostPopularRecipes": "Most Popular Recipes"
+    },
+    "mealPlan": {
+      "generateYourMealPlan": "Generate Your Meal Plan",
+      "timeFrame": "Time Frame:",
+      "day": "Day",
+      "week": "Week",
+      "targetCalories": "Target Calories:",
+      "diet": "Diet:",
+      "generatingMealPlan": "Generating Meal Plan",
+      "mealType": "Meal Type:",
+      "cookingInstructions": "Cooking Instructions:"
+    },
+    "profile": {
+      "profileSettings": "Profile settings",
+      "accountDetails": "Account details",
+      "signOut": "Sign out",
+      "locked": "Locked",
+      "nationality": "Nationality:",
+      "save": "Save",
+      "edit": "Edit",
+      "dateOfBirth": "Date of Birth:"
+    },
+    "search": {
+      "failedFetch": "Failed to fetch recipes",
+      "errorFetching": "Error fetching recipes:",
+      "whatsCooking": "What's cooking?",
+      "find": "Find",
+      "loadingRecipes": "Loading recipes...",
+      "noInstructions": "No instructions available."
+    },
+    "authSignIn": {
+      "invalidCredentials": "Invalid credentials. Please try again.",
+      "networkError": "Network error. Please try again.",
+      "welcomeBack": "Welcome Back to DishDash!👋",
+    }
+ 

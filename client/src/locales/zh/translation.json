@@ -1,0 +1,87 @@
+{
+    "navbar": {
+      "searchRecipes": "搜索 4 个食谱",
+      "generateMealPlan": "生成餐单计划",
+      "community": "社区",
+      "profile": "个人资料",
+      "signOut": "登出",
+      "aboutUs": "关于我们",
+      "contact": "联系",
+      "signIn": "登录",
+      "signUp": "注册"
+    },
+    "footer": {
+      "discoverRecipes": "发现适合您口味的新食谱！",
+      "dishDash": "DishDash",
+      "help": "帮助",
+      "faq": "常见问题",
+      "howToArticles": "如何文章",
+      "contactSupport": "联系支持"
+    },
+    "recipeCard": {
+      "watchOnYouTube": "在 YouTube 上观看"
+    },
+    "recipeList": {
+      "noRecipes": "没有可用的食谱。尝试搜索特定成分。",
+      "readMore": "阅读更多",
+      "close": "关闭",
+      "loading": "加载中..."
+    },
+    "landingPage": {
+      "discoverDeliciousRecipes": "发现美味食谱",
+      "watchLearnCook": "观看、学习并烹饪您最喜欢的菜肴。",
+      "mostPopularRecipes": "最受欢迎的食谱"
+    },
+    "mealPlan": {
+      "generateYourMealPlan": "生成您的餐单计划",
+      "timeFrame": "时间范围：",
+      "day": "天",
+      "week": "周",
+      "targetCalories": "目标卡路里：",
+      "diet": "饮食：",
+      "generatingMealPlan": "生成餐单计划中",
+      "mealType": "餐类：",
+      "cookingInstructions": "烹饪说明："
+    },
+    "profile": {
+      "profileSettings": "个人资料设置",
+      "accountDetails": "账户详情",
+      "signOut": "登出",
+      "locked": "锁定",
+      "nationality": "国籍：",
+      "save": "保存",
+      "edit": "编辑",
+      "dateOfBirth": "出生日期："
+    },
+    "search": {
+      "failedFetch": "获取食谱失败",
+      "errorFetching": "获取食谱时出错：",
+      "whatsCooking": "今天有什么好菜？",
+      "find": "查找",
+      "loadingRecipes": "加载食谱中...",
+      "noInstructions": "没有可用的说明。"
+    },
+    "authSignIn": {
+      "invalidCredentials": "凭证无效。请重试。",
+      "networkError": "网络错误。请重试。",
+      "welcomeBack": "欢迎回来，DishDash！👋",
+      "signInMessage": "登录以访问您最喜欢的食谱！",
+      "signIn": "登录",
+      "noAccount": "还没有账户？注册"
+    },
+    "authSignUp": {
+      "signupSuccessful": "注册成功",
+      "userAlreadyRegistered": "用户已注册",
+      "signupFailed": "注册失败。请重试",
+      "serverError": "服务器错误。请重试。",
+      "welcome": "欢迎来到 DishDash！",
+      "createAccount": "创建账户以访问您最喜欢的菜肴！",
+      "signUp": "注册",
+      "username": "用户名",
+      "email": "电子邮件",
+      "password": "密码",
+      "signingUp": "注册中...",
+      "alreadyHaveAccount": "已经有账户？登录"
+    }
+  }
+  
