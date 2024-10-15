@@ -21,6 +21,8 @@ require("dotenv").config();
 
 // INITIALIZING EXPRESS APP
 const app = express();
+const multer = require("multer");
+
 
 // PORT
 const port =
