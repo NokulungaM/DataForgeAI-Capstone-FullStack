@@ -1,6 +1,9 @@
 // REQUIRED PACKAGES
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
+
 const axios = require('axios'); // Needed for the proxy server
 // CONNECTING TO MONGODB
 const { connectToMongoDB } = require("./db/connection");
@@ -18,6 +21,8 @@ require("dotenv").config();
 
 // INITIALIZING EXPRESS APP
 const app = express();
+const multer = require("multer");
+
 
 // PORT
 const port =
@@ -36,7 +41,9 @@ app.use(cors({
 
 // MIDDLEWARES
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
 
 
 // USING ROUTES

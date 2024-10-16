@@ -43,12 +43,17 @@ const fetchAndDisplayRecipes = async (req, res) => {
 
 //Create a new recipe
 const createRecipe = async (req, res) => {
-  const { title, ingredients, instructions } = req.body;
+  const { title, ingredients, instructions} = req.body;
+  const recipeImage = req.file.filename; // Get uploaded image filename
+  const ingredientsArray = ingredients
+    .split(",")
+    .map((ingredient) => ingredient.trim());
   const recipe = new userRecipe({
     title,
-    ingredients,
+    ingredients : ingredientsArray,
     instructions,
-    userId : req.user._id
+    recipeImage,
+    userId: req.user._id,
   });
   try {
     await recipe.save();
@@ -61,16 +66,40 @@ const createRecipe = async (req, res) => {
 //Get all recipes
 const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await userRecipe.find()
-      .populate("userId")
-      .populate("likes")
-      .populate("comments");
+
+    const recipes = await userRecipe
+      .find()
+      .populate("userId","username name profilePicture")
+      .populate("likes", "userId")
+      .populate("comments", "userId text")
+      .exec();
     if (!recipes) return res.status(404).json({ message: "No recipes found" });
     res.json(recipes);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
+ const activeUsers = async (req, res) => {
+  try {
+    const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    // Find users who posted recipes in the last 24 hours
+    const activeRecipes = await userRecipe.find({ dateCreated: { $gte: last24Hours } }).populate('userId');
+    
+    // Get unique users who posted recipes
+    const activeUsers = activeRecipes
+      .map(recipe => recipe.userId)
+      .filter((user, index, self) => self.findIndex(u => u._id.equals(user._id)) === index);
+
+    res.status(200).json(activeUsers);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching active users' });
+  }
+};
+
+
 
 // Get a single recipe by ID
 const getOneRecipe = async (req, res) => {
@@ -270,6 +299,8 @@ const likeRecipe = async (req, res) => {
       new: true,
     });
 
+    await recipe.save()
+
     const message = isLiked
       ? "Recipe unliked successfully"
       : "Recipe liked successfully";
@@ -320,7 +351,7 @@ const likeRecipe = async (req, res) => {
 
     // Return created comment with recipe and user details
     const populatedComment = await Comment.findById(comment._id)
-      .populate("userId", "name")
+      .populate("userId", "username")
       .populate("recipeId", "title");
 
     res.status(201).json(populatedComment);
@@ -403,6 +434,7 @@ const addRating = async (req, res) => {
 
 module.exports = {
   fetchAndDisplayRecipes,
+  activeUsers,
   likeRecipe,
   addComment,
   getRecipeComments,
