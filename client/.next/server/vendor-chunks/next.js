@@ -1117,6 +1117,7 @@ eval("module.exports = __webpack_require__(/*! ./dist/shared/lib/image-external 
 
 /***/ }),
 
+<<<<<<< HEAD
 /***/ "./node_modules/next/link.js":
 /*!***********************************!*\
   !*** ./node_modules/next/link.js ***!
@@ -1127,6 +1128,8 @@ eval("module.exports = __webpack_require__(/*! ./dist/client/link */ \"./node_mo
 
 /***/ }),
 
+=======
+>>>>>>> d03f4c409aee24192ac7673d317f1542d44ace0a
 /***/ "./node_modules/next/router.js":
 /*!*************************************!*\
   !*** ./node_modules/next/router.js ***!
