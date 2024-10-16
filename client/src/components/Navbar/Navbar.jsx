@@ -29,21 +29,21 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage }) => 
             <>
               <a href="/search" className="hover:text-green-500">Search 4 recipes</a>
               <a href="/meal-plan" className="hover:text-green-500">Generate meal plan</a>
-              <a href="/community" className="hover:text-green-500">Community</a>
+              <a href="/communityPage" className="hover:text-green-500">Community</a>
               <a href="/profile" className="hover:text-green-500">Profile</a>
               <a href="/sign-out" className="hover:text-green-500">Sign-out</a>
             </>
           ) : isAuthPage ? null : isSearchPage ? (
             <>
               <a href="/meal-plan" className="hover:text-green-500">Generate meal plan</a>
-              <a href="/community" className="hover:text-green-500">Community</a>
+              <a href="/communityPage" className="hover:text-green-500">Community</a>
               <a href="/profile" className="hover:text-green-500">Profile</a>
               <a href="/sign-out" className="hover:text-green-500">Sign-out</a>
             </>
           ) : isMealPlanPage ? (
             <>
               <a href="/search" className="hover:text-green-500">Search 4 recipes</a>
-              <a href="/community" className="hover:text-green-500">Community</a>
+              <a href="/communityPage" className="hover:text-green-500">Community</a>
               <a href="/profile" className="hover:text-green-500">Profile</a>
               <a href="/sign-out" className="hover:text-green-500">Sign-out</a>
             </>
