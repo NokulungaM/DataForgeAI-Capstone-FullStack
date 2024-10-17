@@ -2,7 +2,7 @@ import React from "react";
 
 const ActiveUsers = ({ users }) => {
   return (
-    <div className="w-full md:w-1/4 bg-white border border-gray-300 rounded-lg shadow-lg p-4 ml-4">
+    <div className="w-full md:w-1/2 bg-white border border-gray-400 rounded-lg shadow-lg p-4 ml-4">
       <h2 className="text-lg font-bold text-gray-800 mb-4">Active Users</h2>
       {/* Container with max height and scrolling */}
       <div className="space-y-4 max-h-80 overflow-y-auto">

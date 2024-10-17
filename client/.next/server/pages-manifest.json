@@ -1,14 +1,7 @@
 {
   "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-<<<<<<< HEAD
-  "/aboutUs": "pages/aboutUs.js",
-  "/": "pages/index.js",
-  "/auth/signin": "pages/auth/signin.js",
-  "/landingPage": "pages/landingPage.js"
-=======
   "/_error": "pages/_error.js",
+  "/communityPage": "pages/communityPage.js",
   "/": "pages/index.js"
->>>>>>> d03f4c409aee24192ac7673d317f1542d44ace0a
 }

@@ -63,6 +63,21 @@ const createRecipe = async (req, res) => {
   }
 };
 
+//Trending Recipes
+const trendingRecipes = async (req, res) => {
+  try {
+    const trendingRecipes = await userRecipe.find({})
+      .sort({ likes: -1 }) // Sort recipes by likes in descending order
+      .limit(10) // Limit the number of trending recipes
+      .select('userId title'); // Select only the title and likes fields
+
+    res.json(trendingRecipes);
+  } catch (error) {
+    console.error('Error fetching trending recipes:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
 //Get all recipes
 const getAllRecipes = async (req, res) => {
   try {
@@ -435,6 +450,7 @@ const addRating = async (req, res) => {
 module.exports = {
   fetchAndDisplayRecipes,
   activeUsers,
+  trendingRecipes,
   likeRecipe,
   addComment,
   getRecipeComments,

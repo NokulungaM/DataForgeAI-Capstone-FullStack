@@ -15,6 +15,7 @@ const {
 const {
   fetchAndDisplayRecipes,
   getAllRecipes,
+  trendingRecipes,
   activeUsers,
   createRecipe,
   getOneRecipe,
@@ -46,7 +47,7 @@ router.post("/addIngredients", authMiddleware, fetchAndDisplayRecipes);
 router.get("/community/all-recipes", authMiddleware, getAllRecipes);
 
 //To display the users on each recipe Card
-// router.get("/card/multiple-users", authMiddleware, getAllUsers);
+router.get('/community/trending-recipes', authMiddleware, trendingRecipes);
 
 router.get("/community/active-users", authMiddleware, activeUsers)
 
