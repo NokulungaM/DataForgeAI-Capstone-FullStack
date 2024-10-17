@@ -95,7 +95,7 @@ const RecipeList = ({ recipes }) => {
         {recipes.map((recipe, index) => (
           <div
             key={recipe.id || index}
-            className="bg-white text-black rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
+            className="bg-cyan text-black rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform transform hover:scale-105"
           >
             <img
               src={recipe.image || 'default-image-url.jpg'}
@@ -105,7 +105,7 @@ const RecipeList = ({ recipes }) => {
             <div className="p-4">
               <h3 className="text-lg font-bold">{recipe.title}</h3>
               <button
-                className="mt-2 text-white font-semibold hover:underline"
+                className="ml-4 text-blue-500 font-semibold hover:underline"
                 onClick={() => openModal(recipe)}
               >
                 Read More
@@ -137,7 +137,7 @@ const RecipeList = ({ recipes }) => {
       <Dialog
         open={isModalOpen}
         onClose={closeModal}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-cyan bg-opacity-50"
       >
         <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative z-10 shadow-lg">
           <button onClick={closeModal} className="absolute top-2 right-2 text-black hover:text-gray-500">

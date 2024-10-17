@@ -2,6 +2,10 @@
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
   "/_error": "pages/_error.js",
+<<<<<<< HEAD
   "/communityPage": "pages/communityPage.js",
   "/": "pages/index.js"
+=======
+  "/profile": "pages/profile.js"
+>>>>>>> 21de39ea8521a79e8f5aecc6e345d7afbde4cf14
 }
