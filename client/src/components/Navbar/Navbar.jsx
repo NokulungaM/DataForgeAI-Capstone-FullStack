@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLoggedIn }) => {
+const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLoggedIn, isProfile }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
@@ -58,7 +58,7 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
 
       {/* Mobile Menu */}
       <div className={`md:hidden ${isOpen ? 'block' : 'hidden'}`}>
-        {isLandingPage ? (
+        {isProfile? (
           <>
             <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search 4 recipes</a>
             <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Generate meal plan</a>
@@ -66,11 +66,41 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
             <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
             <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
           </>
-        ) : isSearchPage || isMealPlanPage ? (
+        ) :
+        isProfile? (
+          <>
+            <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search 4 recipes</a>
+            <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Generate meal plan</a>
+            <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+            <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
+            <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
+          </>
+        ) :
+          isLandingPage ? (
+            <>
+              <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search 4 recipes</a>
+              <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Generate meal plan</a>
+              <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+              <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
+              <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
+            </>
+        
+        ) : isSearchPage ? (
+          <>
+           
+            <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+            <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
+            <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Meal-plan</a>
+
+            <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
+          </>
+        ):  isMealPlanPage ? (
           <>
             <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search</a>
             <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
             <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
+           
+
             <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
           </>
         ) : isLoggedIn ? (

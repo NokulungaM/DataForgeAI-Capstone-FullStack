@@ -46,7 +46,7 @@ const Profile = () => {
           <p>{profile.username}</p>
         </aside>
         <main className="flex-1 p-8">
-          <h1 className="text-3xl mb-6">Profile</h1>
+         
           <div>
             <p><strong>Name:</strong> {profile.name}</p>
             <p><strong>Email:</strong> {profile.email}</p>
