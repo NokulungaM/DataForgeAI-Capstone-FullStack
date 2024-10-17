@@ -38,7 +38,7 @@ const fetchAndSaveRandomRecipes = async () => {
     // Fetch random recipes from Spoonacular API
     const response = await axios.get(apiUrl, {
       params: {
-        number: 6, // Number of random recipes to fetch
+        number: 8, // Number of random recipes to fetch
         apiKey: spoonacularApiKey,
       },
     });
@@ -80,7 +80,22 @@ const fetchAndSaveRandomRecipes = async () => {
         const instructions = contentParts.map(part => part.text).join(' ') || 'No instructions available';
 
         // Clean up the instructions
-        const cleanedInstructions = instructions.replace(/\*\*/g, '').replace(/\n/g, ' ').trim();
+        const cleanedInstructions = instructions
+        .replace(/\*\*/g, '') // Remove double asterisks
+        .replace(/\n/g, ' ') // Replace new lines with spaces
+        .replace(/\"/g, '') // Remove escaped quotes
+        .replace(/\\/g, '') // Remove any backslashes
+        .replace(/\s{2,}/g, ' ') // Replace multiple spaces with a single space
+        .replace(/\s\./g, '.') // Remove spaces before periods
+        .replace(/\s\,/g, ',') // Remove spaces before commas
+        .replace(/\s\:/g, ':') // Remove spaces before colons
+        .replace(/\s*\*\s*/g, ' - ') // Replace bullet points (*) with dashes and proper spacing
+        .replace(/^\s*-\s*/g, '') // Remove a leading bullet point if it exists at the start
+        .replace(/\d\.\s/g, '\n$&') // Add a new line before numbered lists like "1. "
+        .replace(/-\s/g, '\n- ') // Add a new line before dashes for bullet points
+        .replace(/\.\s*/g, '.\n') // Add new line after every period to create readable sections
+        .replace(/##/g, '')
+        .trim(); // Trim leading/trailing spaces
         console.log('Cleaned Instructions:', cleanedInstructions); // Log cleaned instructions
 
         // Generate TTS URLs for the instructions
@@ -190,7 +205,27 @@ const fetchAndSaveRecipes = async (ingredients) => {
         const instructions = contentParts.map(part => part.text).join(' ') || 'No instructions available';
 
         // Clean up the instructions
-        const cleanedInstructions = instructions.replace(/\*\*/g, '').replace(/\n/g, ' ').trim();
+       
+        const cleanedInstructions = instructions
+        .replace(/\*\*/g, '') // Remove double asterisks
+        .replace(/\n/g, ' ') // Replace new lines with spaces
+        .replace(/\"/g, '') // Remove escaped quotes
+        .replace(/\\/g, '') // Remove any backslashes
+        .replace(/\s{2,}/g, ' ') // Replace multiple spaces with a single space
+        .replace(/\s\./g, '.') // Remove spaces before periods
+        .replace(/\s\,/g, ',') // Remove spaces before commas
+        .replace(/\s\:/g, ':') // Remove spaces before colons
+        .replace(/\s*\*\s*/g, ' - ') // Replace bullet points (*) with dashes and proper spacing
+        .replace(/^\s*-\s*/g, '') // Remove a leading bullet point if it exists at the start
+        .replace(/\d\.\s/g, '\n$&') // Add a new line before numbered lists like "1. "
+        .replace(/-\s/g, '\n- ') // Add a new line before dashes for bullet points
+        .replace(/\.\s*/g, '.\n') // Add new line after every period to create readable sections
+        .replace(/##/g, '')
+        .trim(); // Trim leading/trailing spaces
+
+
+
+
         console.log('Cleaned Instructions:', cleanedInstructions); // Log cleaned instructions
 
         // Generate TTS URLs for the instructions
