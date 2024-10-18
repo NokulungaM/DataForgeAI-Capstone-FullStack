@@ -4,7 +4,9 @@ import axios from "axios";
 import ActiveUsers from "../components/activeUsers";
 import CreateRecipe from "../components/createRecipe";
 import { Heart, MessageCircleMore } from "lucide-react";
-
+import TrendingRecipes from "../components/trendingRecipes";
+import FoodNewsSlideshow from "../components/foodNews";
+// import UserProfile from "../components/userProfile";
 
 const formatTimeAgo = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000);
@@ -29,6 +31,7 @@ const formatTimeAgo = (date) => {
 
 const CommunityPage = () => {
   const [posts, setPosts] = useState([]);
+  const [trendingRecipes, setTrendingRecipes] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -43,6 +46,7 @@ const CommunityPage = () => {
     }
   }, []);
 
+  
   useEffect(() => {
     const fetchPosts = async () => {
       if (!token) {
@@ -66,6 +70,23 @@ const CommunityPage = () => {
         // Assuming the response includes user details
         setPosts(response.data);
 
+        // Fetch trending recipes (with most likes)
+        const fetchTrendingRecipes = async () => {
+          try {
+            const response = await axios.get(
+              "http://localhost:3001/user/community/trending-recipes",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            setTrendingRecipes(response.data);
+          } catch (error) {
+            console.error("Error fetching trending recipes:", error);
+          }
+        };
+
         // Fetch active users
         const userResponse = await axios.get(
           "http://localhost:3001/user/community/active-users",
@@ -74,7 +95,6 @@ const CommunityPage = () => {
           }
         );
         setActiveUsers(userResponse.data);
-
       } catch (error) {
         console.error("Error fetching posts:", error.response?.data || error);
         setError("Error fetching posts. Please try again.");
@@ -125,9 +145,8 @@ const CommunityPage = () => {
       console.error("Error liking the post:", error);
     }
   };
-
   return (
-    <div className="relative max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
+    <div className="relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
       <Head>
         <title>Community Page</title>
       </Head>
@@ -151,98 +170,115 @@ const CommunityPage = () => {
           </button>
         </div>
 
-        {/* Create Recipe Form (Pinned at the top and same size as the posts) */}
-        <div className="flex flex-row md:flex-row">
-        <div className="flex flex-col items-center gap-1">
-          {/* Community Posts */}
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <div
-                key={post._id}
-                className="bg-white border border-gray-400 rounded-lg shadow-lg p-6 transition-all duration-300 flex flex-col"
-                style={{ width: "38rem", height: "auto" }} // Fixed width and dynamic height
-              >
-                <div className="flex items-center mb-2">
-                  <img
-                    src={
-                      post.userId?.profilePicture ||
-                      "https://png.pngitem.com/pimgs/s/524-5246388_anonymous-user-hd-png-download.png"
-                    }
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full mr-2"
-                  />
-                  <div>
-                    <p className="text-gray-800 font-semibold text-xs">
-                      {post.userId?.username || "Anonymous"}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {post.dateCreated
-                        ? formatTimeAgo(new Date(post.dateCreated))
-                        : "Date not available"}
-                    </p>
+        {/* Main Layout: Flex Container */}
+        <div className="flex justify-center gap-5">
+          {/* Left Side: User Profile with 20px padding */}
+          {/* <div className="w-full md:w-1/4 px-5">
+            {profile ? (
+              <UserProfile profile={profile} />
+            ) : (
+              <p>Loading profile...</p>
+            )}
+          </div> */}
+
+          {/* Center: Community Posts */}
+          <div className="w-full md:w-1/2">
+            <div className="flex flex-col items-center gap-4">
+              {posts.length > 0 ? (
+                posts.map((post) => (
+                  <div
+                    key={post._id}
+                    className="bg-white border border-gray-400 rounded-lg shadow-lg p-6 transition-all duration-300 flex flex-col"
+                    style={{ width: "38rem", height: "auto" }} // Fixed width and dynamic height
+                  >
+                    <div className="flex items-center mb-2">
+                      {/* <img
+                        src={
+                          post.userId?.profilePicture ||
+                          "https://png.pngitem.com/pimgs/s/524-5246388_anonymous-user-hd-png-download.png"
+                        }
+                        alt="Profile"
+                        className="w-10 h-10 rounded-full mr-2"
+                      /> */}
+                      <div>
+                        <p className="text-gray-800 font-semibold text-xs">
+                          {post.userId?.username || "Anonymous"}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {post.dateCreated
+                            ? formatTimeAgo(new Date(post.dateCreated))
+                            : "Date not available"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <h2 className="text-md font-bold text-gray-800 mb-1">
+                      {post.title || "Untitled"}
+                    </h2>
+
+                    {post.recipeImage && (
+                      <img
+                        src={post.recipeImage}
+                        alt={post.title}
+                        className="mb-2 rounded-lg object-cover h-28 w-full"
+                      />
+                    )}
+
+                    <div className="transition-all duration-300 ease-in-out overflow-hidden">
+                      <p className="text-gray-600 mb-2 text-sm">
+                        {expandedPostId === post._id
+                          ? post.instructions || "Instructions not available"
+                          : post.instructions && post.instructions.length > 100
+                          ? `${post.instructions.substring(0, 100)}...`
+                          : post.instructions || "Instructions not available"}
+                      </p>
+                    </div>
+
+                    {post.instructions && post.instructions.length > 100 && (
+                      <button
+                        className="text-blue-600 hover:underline text-xs"
+                        onClick={() => toggleExpandPost(post._id)}
+                      >
+                        {expandedPostId === post._id
+                          ? "Read Less"
+                          : "Read More"}
+                      </button>
+                    )}
+
+                    {/* Like and Comment Buttons */}
+                    <div className="flex items-center mt-2 space-x-4 text-gray-600 ">
+                      <button
+                        className="flex items-center space-x-1"
+                        onClick={() => handleLike(post._id)}
+                      >
+                        <Heart
+                          className={`${
+                            post.liked
+                              ? "text-red-500 fill-current"
+                              : "text-gray-400"
+                          }`}
+                        />
+                        {post.likes ? post.likes.length : 0}
+                      </button>
+                      <button className="flex items-center space-x-1">
+                        <MessageCircleMore />
+                        <span>{post.comments ? post.comments.length : 0}</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
+                ))
+              ) : (
+                <p>No posts available.</p>
+              )}
+            </div>
+          </div>
 
-                <h2 className="text-md font-bold text-gray-800 mb-1">
-                  {post.title || "Untitled"}
-                </h2>
-
-                {post.recipeImage && (
-                  <img
-                    src={post.recipeImage}
-                    alt={post.title}
-                    className="mb-2 rounded-lg object-cover h-28 w-full"
-                  />
-                )}
-
-                <div className="transition-all duration-300 ease-in-out overflow-hidden">
-                  <p className="text-gray-600 mb-2 text-sm font-size-50">
-                    {expandedPostId === post._id
-                      ? post.instructions || "Instructions not available"
-                      : post.instructions && post.instructions.length > 100
-                      ? `${post.instructions.substring(0, 100)}...`
-                      : post.instructions || "Instructions not available"}
-                  </p>
-                </div>
-
-                {post.instructions && post.instructions.length > 100 && (
-                  <button
-                    className="text-blue-600 hover:underline text-xs"
-                    onClick={() => toggleExpandPost(post._id)}
-                  >
-                    {expandedPostId === post._id ? "Read Less" : "Read More"}
-                  </button>
-                )}
-
-                {/* Like and Comment Buttons */}
-                <div className="flex items-center mt-2 space-x-4 text-gray-600 ">
-                  <button
-                    className="flex items-center space-x-1"
-                    onClick={() => handleLike(post._id)}
-                  >
-                    <Heart
-                      className={`${
-                        post.liked
-                          ? "text-red-500 fill-current"
-                          : "text-gray-400"
-                      }`}
-                    />
-                    {post.likes ? post.likes.length : 0}
-                  </button>
-                  <button className="flex items-center space-x-1">
-                    <MessageCircleMore />
-                    <span>{post.comments ? post.comments.length : 0}</span>
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>No posts available.</p>
-          )}
-        </div>
-        {/* Pass active users to ActiveUsers component */}
-          <div className="flex-grow">{/* Existing post rendering */}</div>
-          <ActiveUsers users={activeUsers} />
+          {/* Right Side: Active Users, Trending Recipes, Food News with 20px padding */}
+          <div className="w-full md:w-1/4 px-5">
+            <ActiveUsers users={activeUsers} />
+            <TrendingRecipes recipes={trendingRecipes} />
+            <FoodNewsSlideshow />
+          </div>
         </div>
       </div>
 
