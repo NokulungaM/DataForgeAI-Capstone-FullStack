@@ -1,9 +1,9 @@
 {
   "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/auth/signin": "pages/auth/signin.js",
+  "/_error": "pages/_error.js",
   "/landingPage": "pages/landingPage.js",
-  "/communityPage": "pages/communityPage.js"
+  "/auth/signin": "pages/auth/signin.js",
+  "/": "pages/index.js",
+  "/auth/forgotPassword": "pages/auth/forgotPassword.js"
 }
