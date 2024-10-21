@@ -11,11 +11,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^2.1.8",
     "@heroicons/react": "^2.1.5",
     "axios": "^1.7.7",
     "client": "file:",
+    "cookies": "^0.9.1",
+    "cookies-next": "^4.3.0",
+    "date-fns": "^4.1.0",
     "framer-motion": "^11.8.0",
+    "js-cookie": "^3.0.5",
+    "lucide": "^0.453.0",
     "lucide-react": "^0.447.0",
     "next": "14.1.0",
     "react": "^18",
@@ -24,6 +34,7 @@
     "react-router-dom": "^6.26.2"
   },
   "devDependencies": {
+    "@types/cookies": "^0.9.0",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",
     "tailwindcss": "^3.3.0"

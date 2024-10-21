@@ -28,22 +28,33 @@ const loginUser = async (req, res) => {
     const { username,  password } = req.body;
 
     try {
-        // Find user by either username or email
-        const user = await User.findOne({ username }) 
+      // Find user by either username or email
+      const user = await User.findOne({ username });
 
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid user' });
-        }
+      if (!user) {
+        return res.status(401).json({ message: "Invalid user" });
+      }
 
-        // Compare passwords
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid password' });
-        }
+      // Compare passwords
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Invalid password" });
+      }
 
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, isAdmin: user.role === 'admin' }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ token, message: 'Login successful' });
+      // Generate JWT token
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.role === "admin" },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+      // Set the cookie
+      res.cookie("auth-token", token, {
+        httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
+        secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+        sameSite: "strict", // Prevent CSRF attacks
+        maxAge: 1000 * 60 * 60 * 24, // Set cookie expiration (e.g., 1 day)
+      });
+      res.status(200).json({ token, message: "Login successful" });
     } catch (error) {
         console.error("Error logging in:", error);
         res.status(500).json({ error: error.message });
