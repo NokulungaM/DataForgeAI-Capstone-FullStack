@@ -14,6 +14,12 @@ router.post('/signup', authController.signup);
 //Route to log users in
 router.post('/login', loginUser);
 
+//Route to forgot password
+router.post("/forgot-password", forgotPassword);
+
+//Route to reset password
+router.post("/reset-password", resetPassword);
+
 //Route to get user's ingredients
 router.get('/ingredients', authMiddleware, getUserIngredients);
 
