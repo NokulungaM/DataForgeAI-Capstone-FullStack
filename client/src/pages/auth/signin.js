@@ -83,10 +83,18 @@ const SignIn = () => {
                 {loading ? "Signing In..." : "Sign In"}
               </button>
             </div>
-            <div className="signin-footer">
+            <div className="signin-footer gap-1">
               <button type="button" onClick={() => router.push("/auth/signup")}>
                 Don't have an account? Sign up
               </button>
+            </div>
+            <div>
+              <button
+              onClick={handleForgotPassword}
+              className="text-sm text-blue-500 mt-2 hover:underline"
+              >
+               Forgot Password
+            </button>
             </div>
           </form>
         </div>
