@@ -9,7 +9,7 @@ const SignIn = () => {
   const router = useRouter();
 
   const handleForgotPassword = () => {
-    router.push("/auth/forgotPassword");
+    router.push("/auth/forgotPassword"); //Added onClick handler
   };
 
   const handleSubmit = async (e) => {
