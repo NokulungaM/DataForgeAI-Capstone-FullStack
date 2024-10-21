@@ -27,15 +27,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/auth/forgotPassword": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/auth/forgotPassword.js"
+    ],
     "/auth/signin": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/auth/signin.js"
-    ],
-    "/communityPage": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/communityPage.js"
     ],
     "/landingPage": [
       "static/chunks/webpack.js",

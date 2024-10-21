@@ -8,6 +8,10 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const handleForgotPassword = () => {
+    router.push("/auth/forgotPassword"); //Added onClick handler
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
