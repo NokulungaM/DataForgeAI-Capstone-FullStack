@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware'); // Middleware for authentication
 const { getAllUsers, deleteUser } = require('../controllers/adminController');
-const {registerUser, loginUser } = require('../controllers/userController');
+ const {registerUser, loginUser } = require('../controllers/userController');
 const { validateSignUp, validateSignIn, signOut} = require('../controllers/authController');
 
 

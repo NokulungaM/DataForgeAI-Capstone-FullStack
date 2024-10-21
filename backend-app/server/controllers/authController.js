@@ -2,8 +2,9 @@ const User = require("../models/user");
 const { validationResult, body } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
 
-// authMiddleware for registration
+// Auth middleware for registration
 const validateSignUp = [
   body("username")
     .trim()
@@ -11,18 +12,14 @@ const validateSignUp = [
     .withMessage("Username is required")
     .isLength({ min: 3 })
     .withMessage("Username must be at least 3 characters long"),
-
+  
   body("email").trim().isEmail().withMessage("Valid email is required"),
-
+  
   body("password")
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long")
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*|d)(?=.*[A-Z])(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/
-    )
-    .withMessage(
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-    ),
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[A-Z])(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/)
+    .withMessage("Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"),
 ];
 
 // Validation middleware for sign-in
@@ -54,14 +51,34 @@ exports.signUp = async (req, res) => {
       return res.status(400).json({ error: "Username already in use" });
     }
 
+    // Salt and Hash password before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const user = new User({
+      username,
+      email,
+      password: hashedPassword,
+      ...rest,
+    });
+
+    await user.save();
+
     // Generate JWT token
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
+      expiresIn: "1h",
+    });
+
+    // Set the cookie
+    res.cookie("auth-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24,
     });
 
     res.status(201).json({ token, message: "User registered successfully" });
   } catch (error) {
-    console.error("Sign up error:, error");
+    console.error("Sign up error:", error);
     res.status(400).json({ error: "Failed to create user" });
   }
 };
@@ -86,9 +103,23 @@ exports.signIn = async (req, res) => {
       return res.status(400).json({ error: "Invalid login credentials" });
     }
 
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Invalid login credentials" });
+    }
+
     // Generate JWT token
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
+      expiresIn: "1h",
+    });
+
+    // Set the cookie
+    res.cookie("auth-token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 24,
     });
 
     res.status(200).json({ token, message: "Signed in successfully" });
@@ -110,7 +141,7 @@ exports.signOut = async (req, res) => {
 
     // Optional: Remove old tokens from the blacklist (e.g., tokens older than 1 hour)
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-    user.tokenBlacklist = user.tokenBlacklist.filter((token) => {
+    user.tokenBlacklist = user.tokenBlacklist.filter(token => {
       const payload = jwt.decode(token);
       return payload.exp * 1000 > oneHourAgo.getTime();
     });
@@ -125,11 +156,9 @@ exports.signOut = async (req, res) => {
 
 // Validation middleware for resetting password
 const validateResetPassword = [
-  check("password", "Password must be at least 6 characters long").isLength({
-    min: 6,
-  }),
-  check("confirmPassword", "Confirm password is required").not().isEmpty(),
-  check("confirmPassword").custom((value, { req }) => {
+  body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
+  body("confirmPassword").not().isEmpty().withMessage("Confirm password is required"),
+  body("confirmPassword").custom((value, { req }) => {
     if (value !== req.body.password) {
       throw new Error("Passwords do not match");
     }
@@ -139,7 +168,7 @@ const validateResetPassword = [
 
 // Validation for forgot password
 const validateForgotPassword = [
-  check("email").trim().isEmail().withMessage("Valid email is required"),
+  body("email").trim().isEmail().withMessage("Valid email is required"),
 ];
 
 exports.forgotPassword = async (req, res) => {
@@ -171,10 +200,8 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
-    // Get the base URL from the request (running host)
+    // Get the base URL from the request
     const baseUrl = `${req.protocol}://${req.get("host")}`;
-
-    // Create reset URL
     const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
 
     const mailOptions = {
@@ -201,13 +228,11 @@ exports.resetPassword = async (req, res) => {
     // Find user by reset token
     const user = await User.findOne({
       resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }, // Check if token is still valid
+      resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ error: "Password reset token is invalid or has expired" });
+      return res.status(400).json({ error: "Password reset token is invalid or has expired" });
     }
 
     // Hash the new password
@@ -221,17 +246,11 @@ exports.resetPassword = async (req, res) => {
     await user.save();
 
     // Automatically sign the user in by generating a JWT
-    const token_ = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    const newToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Respond with the token for automatic sign-in
-    res
-      .status(200)
-      .json({
-        token_,
-        message: "Password reset successful, signed in automatically",
-      });
+    res.status(200).json({ token: newToken, message: "Password reset successful, signed in automatically" });
   } catch (error) {
     console.error("Reset Password Error:", error);
     res.status(500).json({ error: "Failed to reset password" });
@@ -244,4 +263,8 @@ module.exports = {
   signUp: [validateSignUp, exports.signUp],
   signIn: [validateSignIn, exports.signIn],
   signOut: exports.signOut,
+  validateResetPassword,
+  validateForgotPassword,
+  forgotPassword: [validateForgotPassword, exports.forgotPassword],
+  resetPassword: [validateResetPassword, exports.resetPassword],
 };

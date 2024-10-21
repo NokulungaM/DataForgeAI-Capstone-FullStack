@@ -11,7 +11,7 @@ const HomePage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:3001/random/recipes/random?limitLicense=true&number=6"
+        "http://localhost:3001/random/recipes/random?limitLicense=true&number=8"
       );
       if (!response.ok) throw new Error("Failed to fetch recipes");
       const data = await response.json();
@@ -68,7 +68,9 @@ const HomePage = () => {
         {!loading && !error && recipes.length > 0 && (
           <div className="mt-16 w-full">
             <h2 className="text-3xl font-bold mb-6">Featured Recipes</h2>
-            <RecipeList recipes={recipes} />
+            <div className="cyan-500">
+              <RecipeList recipes={recipes} />
+            </div>
           </div>
         )}
       </main>
