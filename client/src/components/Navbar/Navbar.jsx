@@ -24,14 +24,14 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
             <>
               <a href="/search" className="hover:text-cyan-500">Search 4 recipes</a>
               <a href="/meal-plan" className="hover:text-cyan-500">Generate meal plan</a>
-              <a href="/community" className="hover:text-cyan-500">Community</a>
+              <a href="/communityPage" className="hover:text-cyan-500">Community</a>
               <a href="/profile" className="hover:text-cyan-500">Profile</a>
               <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs">Sign out</button>
             </>
           ) : isSearchPage || isMealPlanPage ? (
             <>
               <a href="/search" className="hover:text-cyan-500">Search</a>
-              <a href="/community" className="hover:text-cyan-500">Community</a>
+              <a href="/communityPage" className="hover:text-cyan-500">Community</a>
               <a href="/profile" className="hover:text-cyan-500">Profile</a>
               <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs">Sign out</button>
             </>
@@ -62,7 +62,7 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
           <>
             <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search 4 recipes</a>
             <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Generate meal plan</a>
-            <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+            <a href="/communityPage" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
             <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
             <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
           </>
@@ -71,7 +71,7 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
           <>
             <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search 4 recipes</a>
             <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Generate meal plan</a>
-            <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+            <a href="/communityPage" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
             <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
             <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
           </>
@@ -80,7 +80,7 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
             <>
               <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search 4 recipes</a>
               <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Generate meal plan</a>
-              <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+              <a href="/communityPage" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
               <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
               <button onClick={handleSignOut} className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Sign out</button>
             </>
@@ -88,7 +88,7 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
         ) : isSearchPage ? (
           <>
            
-            <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+            <a href="/communityPage" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
             <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
             <a href="/meal-plan" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Meal-plan</a>
 
@@ -97,7 +97,7 @@ const Navbar = ({ isLandingPage, isAuthPage, isSearchPage, isMealPlanPage, isLog
         ):  isMealPlanPage ? (
           <>
             <a href="/search" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Search</a>
-            <a href="/community" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
+            <a href="/communityPage" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Community</a>
             <a href="/profile" className="block px-4 py-2 text-xs hover:bg-gray-200 hover:text-black">Profile</a>
            
 
