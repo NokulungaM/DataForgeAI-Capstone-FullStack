@@ -1,6 +1,8 @@
 {
+  "/_error": "pages/_error.js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
-  "/_error": "pages/_error.js",
-  "/": "pages/index.js"
+  "/landingPage": "pages/landingPage.js",
+  "/auth/signin": "pages/auth/signin.js",
+  "/meal-plan": "pages/meal-plan.js"
 }
