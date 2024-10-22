@@ -5,11 +5,10 @@ import axios from 'axios';
 const RecipeList = ({ recipes }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [currentAudio, setCurrentAudio] = useState(null); // Track current audio
-  const [isPlaying, setIsPlaying] = useState(false); // Track playing state
-  const [audioQueue, setAudioQueue] = useState([]); // Queue for multiple audio URLs
-  const [audioIndex, setAudioIndex] = useState(0); // Current index in the audio queue
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioQueue, setAudioQueue] = useState([]);
+  const [audioIndex, setAudioIndex] = useState(0);
 
   const openModal = (recipe) => {
     setSelectedRecipe(recipe);
@@ -19,6 +18,10 @@ const RecipeList = ({ recipes }) => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedRecipe(null);
+    stopCurrentAudio(); // Stop any audio playback
+  };
+
+  const stopCurrentAudio = () => {
     if (currentAudio) {
       currentAudio.pause();
       setCurrentAudio(null);
@@ -28,10 +31,16 @@ const RecipeList = ({ recipes }) => {
 
   const playAudioInstructions = (recipe) => {
     if (recipe.ttsUrl) {
-      const ttsUrls = recipe.ttsUrl.split(', ');
+      const ttsUrls = recipe.ttsUrl.split(', '); // Assuming multiple TTS URLs
       setAudioQueue(ttsUrls); // Store the audio URLs
       setAudioIndex(0); // Start from the first URL
       playNextAudio(0, ttsUrls); // Play the first audio
+    } else if (recipe.instructions) {
+      const instructionsChunks = splitInstructions(recipe.instructions, 300); // Split instructions into chunks
+      const audioUrls = instructionsChunks.map(chunk => generateTtsUrl(chunk)); // Generate TTS URLs for each chunk
+      setAudioQueue(audioUrls); // Store the audio URLs
+      setAudioIndex(0); // Start from the first URL
+      playNextAudio(0, audioUrls); // Play the first audio
     }
   };
 
@@ -44,50 +53,46 @@ const RecipeList = ({ recipes }) => {
         .then((response) => {
           const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
           const audio = new Audio(URL.createObjectURL(audioBlob));
-          setCurrentAudio(audio); // Track the current audio
 
-          audio.play();
-          setIsPlaying(true);
-          setAudioIndex(index); // Track the current audio index
+          // Set up event listeners to handle when the current audio ends
+          audio.onended = () => {
+            playNextAudio(index + 1, ttsUrls); // Play the next audio URL in the queue
+          };
 
-          audio.addEventListener('ended', () => {
-            setIsPlaying(false);
-            playNextAudio(index + 1, ttsUrls); // Play next audio when this one ends
-          });
+          audio.onerror = (error) => {
+            console.error('Error playing audio:', error);
+            playNextAudio(index + 1, ttsUrls); // Skip to the next audio URL if there's an error
+          };
+
+          setCurrentAudio(audio); // Track the current audio element
+          audio.play().catch(error => console.error('Error playing audio:', error));
+          setIsPlaying(true); // Update playing state
         })
         .catch((error) => {
-          console.error('Error playing audio:', error);
-          playNextAudio(index + 1, ttsUrls); // Skip to next if there's an error
+          console.error('Error fetching TTS audio:', error);
+          playNextAudio(index + 1, ttsUrls); // Skip to the next audio URL if there's a fetch error
         });
+    } else {
+      setIsPlaying(false); // No more audio to play, reset playing state
     }
   };
 
-  const toggleAudioPlayback = () => {
-    if (currentAudio) {
-      if (isPlaying) {
-        currentAudio.pause();
-        setIsPlaying(false);
-      } else {
-        currentAudio.play();
-        setIsPlaying(true);
-      }
+  const splitInstructions = (instructions, maxLength) => {
+    const chunks = [];
+    for (let i = 0; i < instructions.length; i += maxLength) {
+      chunks.push(instructions.substring(i, i + maxLength));
     }
+    return chunks;
   };
 
-  useEffect(() => {
-    // Clean up audio when the component unmounts
-    return () => {
-      if (currentAudio) {
-        currentAudio.pause();
-        setCurrentAudio(null);
-      }
-    };
-  }, [currentAudio]);
+  const generateTtsUrl = (text) => {
+    // This is a placeholder for your TTS URL generation logic
+    return `http://your-tts-service.com/generate?text=${encodeURIComponent(text)}`;
+  };
 
   if (!recipes || recipes.length === 0) {
     return <p>No recipes available. Try searching for specific ingredients.</p>;
   }
-
 
   return (
     <>
@@ -121,7 +126,14 @@ const RecipeList = ({ recipes }) => {
                   {currentAudio && (
                     <button
                       className="ml-4 text-blue-500 font-semibold hover:underline"
-                      onClick={toggleAudioPlayback}
+                      onClick={() => {
+                        if (isPlaying) {
+                          stopCurrentAudio();
+                        } else {
+                          currentAudio.play();
+                          setIsPlaying(true);
+                        }
+                      }}
                     >
                       {isPlaying ? 'Pause' : 'Resume'}
                     </button>
@@ -143,22 +155,18 @@ const RecipeList = ({ recipes }) => {
           <button onClick={closeModal} className="absolute top-2 right-2 text-black hover:text-gray-500">
             Close
           </button>
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            selectedRecipe && (
-              <>
-                <img
-                  src={selectedRecipe.image || 'default-image-url.jpg'}
-                  alt={selectedRecipe.title}
-                  className="w-full h-64 object-cover rounded-t-lg"
-                />
-                <h3 className="text-2xl font-bold mt-4">{selectedRecipe.title}</h3>
-                <p className="mt-2 text-gray-700 whitespace-pre-wrap">
-                  {selectedRecipe.instructions || 'No instructions available.'}
-                </p>
-              </>
-            )
+          {selectedRecipe && (
+            <>
+              <img
+                src={selectedRecipe.image || 'default-image-url.jpg'}
+                alt={selectedRecipe.title}
+                className="w-full h-64 object-cover rounded-t-lg"
+              />
+              <h3 className="text-2xl font-bold mt-4">{selectedRecipe.title}</h3>
+              <p className="mt-2 text-gray-700 whitespace-pre-wrap">
+                {selectedRecipe.instructions || 'No instructions available.'}
+              </p>
+            </>
           )}
         </div>
       </Dialog>

@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 self.__BUILD_MANIFEST = {__rewrites:{afterFiles:[],beforeFiles:[],fallback:[]},"/_error":["static\u002Fchunks\u002Fpages\u002F_error.js"],"/communityPage":["static\u002Fchunks\u002Fpages\u002FcommunityPage.js"],"/landingPage":["static\u002Fchunks\u002Fpages\u002FlandingPage.js"],"/meal-plan":["static\u002Fchunks\u002Fpages\u002Fmeal-plan.js"],"/profile":["static\u002Fchunks\u002Fpages\u002Fprofile.js"],"/search":["static\u002Fchunks\u002Fpages\u002Fsearch.js"],sortedPages:["\u002F_app","\u002F_error","\u002FcommunityPage","\u002FlandingPage","\u002Fmeal-plan","\u002Fprofile","\u002Fsearch"]};self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()
+=======
+self.__BUILD_MANIFEST = {__rewrites:{afterFiles:[],beforeFiles:[],fallback:[]},"/":["static\u002Fchunks\u002Fpages\u002Findex.js"],"/_error":["static\u002Fchunks\u002Fpages\u002F_error.js"],sortedPages:["\u002F","\u002F_app","\u002F_error"]};self.__BUILD_MANIFEST_CB && self.__BUILD_MANIFEST_CB()
+>>>>>>> e8e8b4aca7c23db81a5059d0376390d999a789a5
