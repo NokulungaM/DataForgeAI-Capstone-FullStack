@@ -1,9 +1,8 @@
 {
+  "/_error": "pages/_error.js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
-  "/_error": "pages/_error.js",
-  "/landingPage": "pages/landingPage.js",
-  "/auth/signin": "pages/auth/signin.js",
   "/": "pages/index.js",
-  "/auth/forgotPassword": "pages/auth/forgotPassword.js"
+  "/auth/signin": "pages/auth/signin.js",
+  "/landingPage": "pages/landingPage.js"
 }
