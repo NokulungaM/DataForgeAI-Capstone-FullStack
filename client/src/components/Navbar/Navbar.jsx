@@ -1,45 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { FaSearch, FaCalendarAlt, FaUser, FaUsers } from "react-icons/fa";
+import { FaSearch, FaCalendarAlt, FaUser, FaUsers, FaDoorOpen, FaHome } from "react-icons/fa";
 
-const Navbar = ({ isLandingPage, isCommunityPage, isSearchPage, isMealPlanPage, isLoggedIn, isProfilePage }) => {
+const Navbar = ({ isLandingPage, isCommunityPage, isSearchPage, isMealPlanPage, isAuthPage, isLoggedIn,isProfilePage }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [token, setToken] = useState(null);
   const router = useRouter();
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    console.log('Token from localStorage:', storedToken); // Check the token value
+    setToken(storedToken); // Set the token in the state
+  }, []);
+
   const handleSignOut = () => {
-    // Handle sign-out logic
-    router.push('/');
+    Cookies.remove('token');
+    setIsLoggedIn(false);
+    router.push("/");
   };
 
   const navLinks = [
     { 
       label: 'Search Recipes', 
-      href: '/search', 
+      href: '/search',
       icon: <FaSearch size={10} />,
-      showOn: ['landing', 'search', 'mealPlan', 'community', 'profile'] // Pages to show this link on
+      showOn: ['landing', 'mealPlan', 'community', 'profile'] // Pages to show this link on
     },
     { 
       label: 'Generate Meal Plan', 
       href: '/meal-plan', 
       icon: <FaCalendarAlt size={10} />,
-      showOn: ['landing', 'search', 'mealPlan', 'community', 'profile'] 
+      showOn: ['landing', 'search', 'community', 'profile'] 
     },
     { 
       label: 'Community', 
       href: '/communityPage', 
       icon: <FaUsers size={10} />,
-      showOn: ['landing', 'search', 'mealPlan', 'community', 'profile'] 
+      showOn: ['landing', 'search', 'mealPlan',  'profile'] 
     },
     { 
       label: 'Profile', 
       href: '/profile', 
       icon: <FaUser size={10} />,
-      showOn: ['landing', 'search', 'mealPlan', 'community', 'profile'] 
+      showOn: ['landing', 'search', 'mealPlan', 'community'] 
     },
+    {
+      label: 'Sign Out',
+      href: '/auth/signin',
+      icon: <FaDoorOpen size={10} />,
+      showOn: ['search', 'mealPlan', 'community', 'profile'] 
+    },
+    {
+      label: 'Home',
+      href: '/',
+      icon: <FaHome size={10} onClick={() => setIsOpen(!isOpen)} />,
+      showOn: ['landing', 'search', 'mealPlan', 'community', 'profile', 'authPage'] // Always show on landing page
+    }
   ];
 
   const shouldShowLink = (link) => {
+  
     const currentPage = isLandingPage ? 'landing' :
+                        isAuthPage? 'authPage' :
                         isSearchPage ? 'search' :
                         isMealPlanPage ? 'mealPlan' :
                         isCommunityPage ? 'community' :
@@ -59,42 +81,44 @@ const Navbar = ({ isLandingPage, isCommunityPage, isSearchPage, isMealPlanPage, 
           <img src="/DD LOGO.png" alt="Logo" className="h-8" />{" "}
           {/* Adjusted logo styling */}
         </div>
-      
 
-      {/* Desktop Menu */}
-      <div className="hidden md:flex space-x-8 items-center text-xs">
-        {navLinks.map(
-          (link, index) =>
-            shouldShowLink(link) && (
+        {/* Desktop Menu */}
+        <div className="hidden md:flex space-x-8 items-center text-xs">
+          {navLinks.map(
+            (link, index) =>
+              shouldShowLink(link) && (
+                <a
+                  key={index}
+                  href={link.href}
+                  className="hover:text-cyan-500 inline-flex items-center"
+                >
+                  {link.label}
+                  <span className="ml-1">{link.icon}</span>
+                </a>
+              )
+          )}
+
+          {/* Sign out/Sign in logic */}
+          {isLoggedIn ? (
+            <button
+              onClick={handleSignOut}
+              className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs"
+            >
+              Sign out
+            </button>
+          ) : (
+            isLandingPage && ( // Only show Sign in on landing page
               <a
-                key={index}
-                href={link.href}
-                className="hover:text-cyan-500 inline-flex items-center"
+                href="/auth/signin"
+                className="bg-transparent text-black hover:text-cyan-500 px-4 py-2 rounded-full font-semibold transition-transform transform hover:scale-105 shadow-lg"
               >
-                {link.label}
-                <span className="ml-1">{link.icon}</span>
+                Sign in
               </a>
             )
-        )}
+          )}
+        </div>
 
-        {isLoggedIn ? (
-          <button
-            onClick={handleSignOut}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs"
-          >
-            Sign out
-          </button>
-        ) : (
-          <a
-            href="/auth/signin"
-            className="bg-transparent text-black hover:text-cyan-500 px-4 py-2 rounded-full font-semibold transition-transform transform hover:scale-105 shadow-lg"
-          >
-            Sign in
-          </a>
-        )}
-      </div>
-
-      {/* Mobile Menu Icon */}
+        {/* Mobile Menu Icon */}
         <button
           className="md:hidden text-black focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
@@ -131,8 +155,8 @@ const Navbar = ({ isLandingPage, isCommunityPage, isSearchPage, isMealPlanPage, 
             )
         )}
 
-        {/* Sign out/Sign in logic */}
-        {isLoggedIn ? (
+        {/* Sign out/Sign in logic - CORRECTED */}
+        {isLoggedIn ? ( // Use isLoggedIn here, NOT isAuthPage
           <button
             onClick={handleSignOut}
             className="block w-full text-center px-4 py-2 text-xs bg-red-500 text-white rounded-lg"
@@ -147,7 +171,7 @@ const Navbar = ({ isLandingPage, isCommunityPage, isSearchPage, isMealPlanPage, 
             Sign in
           </a>
         )}
-        </div>
+      </div>
     </nav>
   );
 };

@@ -2,14 +2,8 @@
   "/_error": "pages/_error.js",
   "/_app": "pages/_app.js",
   "/_document": "pages/_document.js",
-<<<<<<< HEAD
-  "/landingPage": "pages/landingPage.js",
+  "/": "pages/index.js",
   "/communityPage": "pages/communityPage.js",
-  "/meal-plan": "pages/meal-plan.js",
-  "/profile": "pages/profile.js",
-  "/search": "pages/search.js"
-=======
-  "/_error": "pages/_error.js",
-  "/": "pages/index.js"
->>>>>>> e8e8b4aca7c23db81a5059d0376390d999a789a5
+  "/auth/signin": "pages/auth/signin.js",
+  "/landingPage": "pages/landingPage.js"
 }
