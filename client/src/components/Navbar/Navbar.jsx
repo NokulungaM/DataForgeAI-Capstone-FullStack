@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import {
+  FaSearch,
+  FaCalendarAlt,
+  FaUser,
+  FaUsers,
+  FaDoorOpen,
+  FaHome,
+} from "react-icons/fa";
 
 const Navbar = ({ isSearchPage, isMealPlanPage, isProfilePage, isCommunityPage, isLoggedIn, isAuthPage }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,11 +24,24 @@ const Navbar = ({ isSearchPage, isMealPlanPage, isProfilePage, isCommunityPage, 
     if (isSearchPage) {
       return (
         <>
-          <a href="/meal-plan" className={className}>Generate meal plan</a>
-          <a href="/communityPage" className={className}>Community</a>
-          <a href="/profile" className={className}>Profile</a>
-          <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs">
+          <a href="/meal-plan" className={className}>
+            Generate meal plan{" "}
+            <FaCalendarAlt size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/communityPage" className={className}>
+            Community
+            <FaUsers size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/profile" className={className}>
+            Profile
+            <FaUser size={10} className="inline-block ml-1" />
+          </a>
+          <button
+            onClick={handleSignOut}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs"
+          >
             Sign out
+            <FaDoorOpen size={10} className="inline-block ml-1" />
           </button>
         </>
       );
@@ -29,11 +50,22 @@ const Navbar = ({ isSearchPage, isMealPlanPage, isProfilePage, isCommunityPage, 
     if (isMealPlanPage) {
       return (
         <>
-          <a href="/search" className={className}>Search</a>
-          <a href="/communityPage" className={className}>Community</a>
-          <a href="/profile" className={className}>Profile</a>
-          <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs">
-            Sign out
+          <a href="/search" className={className}>
+            Search
+            <FaSearch size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/communityPage" className={className}>
+            Community <FaUsers size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/profile" className={className}>
+            Profile
+            <FaUser size={10} className="inline-block ml-1" />
+          </a>
+          <button
+            onClick={handleSignOut}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs"
+          >
+            Sign out <FaDoorOpen size={10} className="inline-block ml-1" />
           </button>
         </>
       );
@@ -42,11 +74,22 @@ const Navbar = ({ isSearchPage, isMealPlanPage, isProfilePage, isCommunityPage, 
     if (isProfilePage) {
       return (
         <>
-          <a href="/search" className={className}>Search</a>
-          <a href="/meal-plan" className={className}>Generate meal plan</a>
-          <a href="/communityPage" className={className}>Community</a>
-          <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs">
-            Sign out
+          <a href="/search" className={className}>
+            Search
+            <FaSearch size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/meal-plan" className={className}>
+            Generate meal plan{" "}
+            <FaCalendarAlt size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/communityPage" className={className}>
+            Community <FaUsers size={10} className="inline-block ml-1" />
+          </a>
+          <button
+            onClick={handleSignOut}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs"
+          >
+            Sign out <FaDoorOpen size={10} className="inline-block ml-1" />
           </button>
         </>
       );
@@ -55,11 +98,24 @@ const Navbar = ({ isSearchPage, isMealPlanPage, isProfilePage, isCommunityPage, 
     if (isCommunityPage) {
       return (
         <>
-          <a href="/search" className={className}>Search</a>
-          <a href="/meal-plan" className={className}>Generate meal plan</a>
-          <a href="/profile" className={className}>Profile</a>
-          <button onClick={handleSignOut} className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs">
-            Sign out
+          <a href="/search" className={className}>
+            Search <FaSearch size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/meal-plan" className={className}>
+            Generate meal plan{" "}
+            <FaCalendarAlt size={10} className="inline-block ml-1" />
+          </a>
+          <a href="/profile" className={className}>
+            Profile <FaUser size={10} className="inline-block ml-1" />
+          </a>
+          <button
+            onClick={handleSignOut}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg text-xs"
+          >
+            Sign out{" "}
+              {" "}
+              <FaDoorOpen size={10} className="inline-block ml-1" />
+            
           </button>
         </>
       );

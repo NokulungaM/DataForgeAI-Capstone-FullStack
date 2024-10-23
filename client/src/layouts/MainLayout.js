@@ -11,7 +11,6 @@ export default function Layout({ children }) {
   const isSearchPage = router.pathname === '/search';
   const isMealPlanPage = router.pathname === '/meal-plan';
   const isCommunityPage = router.pathname === '/communityPage';
-  const  isProfilePage = router.pathname == '/profile';
 
 
   // Pass props to the Navbar to customize the buttons
