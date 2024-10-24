@@ -26,24 +26,16 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
-<<<<<<< HEAD
     ],
-    "/communityPage": [
+    "/auth/signin": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/communityPage.js"
-    ],
-    "/profile": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/profile.js"
+      "static/chunks/pages/auth/signin.js"
     ],
     "/search": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/search.js"
-=======
->>>>>>> b423d514636da9515e41c0af55a5d18703fb2e82
     ]
   },
   "ampFirstPages": []
