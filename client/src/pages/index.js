@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import RecipeList from "../components/RecipeList";
 import Image from "next/image";
+import Testimonials from "../components/testimonials"; 
+import WhatWeDo from "../components/WhatWeDo";
+import Gyms from '../components/gyms';  
+import Article from '../components/article';
+
+
 
 const HomePage = () => {
   const [recipes, setRecipes] = useState([]);
@@ -30,38 +36,49 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-white-to-br text-green font-poppins">
       <main className="flex flex-col items-center justify-center text-center px-6 py-16">
-      <div className="flex flex-col md:flex-row gap-32 items-center">
-  <div className="col-span-3 md:flex-2">
-    <h1 className="text-5xl md:text-5xl font-bold mb-6">
-      Discover Culinary Magic
-    </h1>
-    <p className="text-lg md:text-xl font-light mb-8">
-      Unleash your inner chef with recipes tailored to your ingredients.
-    </p>
-    <div className="flex justify-center space-x-4 mb-8">
-      <a href="/aboutUs" className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg">
-        About us
-      </a>
-      <a
-        href="/auth/signup"
-        className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg"
-      >
-        Get Started
-      </a>
-    </div>
-  </div>
+        <div className="flex flex-col md:flex-row gap-32 items-center">
+          <div className="col-span-3 md:flex-2">
+            <h1 className="text-5xl md:text-5xl font-bold mb-6">
+              Discover Culinary Magic
+            </h1>
+            <p className="text-lg md:text-xl font-light mb-8">
+              Unleash your inner chef with recipes tailored to your ingredients.
+            </p>
+            <div className="flex justify-center space-x-4 mb-8">
+              <a
+                href="/aboutUs"
+                className="bg-teal-500 hover:bg-teal-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg"
+              >
+                About us
+              </a>
+              <a
+                href="/auth/signup"
+                className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-full text-white font-semibold transition-transform transform hover:scale-105 shadow-lg"
+              >
+                Get Started
+              </a>
+            </div>
+          </div>
 
-  <div className="relative md:flex-1">
-    <Image
-      width={400}
-      height={300}
-      className="bg-cover rounded-lg shadow-lg"
-      src={`https://www.healthbenefitstimes.com/glossary/wp-content/uploads/2020/08/Recipe.jpg`}
-    />
-  </div>
-</div>
+          <div className="relative md:flex-1">
+            <Image
+              width={400}
+              height={300}
+              className="bg-cover rounded-lg shadow-lg"
+              src={`https://www.healthbenefitstimes.com/glossary/wp-content/uploads/2020/08/Recipe.jpg`}
+              alt="Recipe"
+            />
+          </div>
+        </div>
 
+        {/*Section */}
+        <WhatWeDo />
+        <Article />
+        <Testimonials />
+        <Gyms />
+        
 
+        {/* Loading/Error/Recipes Section */}
         {loading && <p>Loading recipes...</p>}
         {error && <p className="text-red-500">{error}</p>}
 
