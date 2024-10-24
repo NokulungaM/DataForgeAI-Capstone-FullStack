@@ -26,6 +26,19 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
+<<<<<<< HEAD
+=======
+    ],
+    "/auth/signin": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/auth/signin.js"
+    ],
+    "/search": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/search.js"
+>>>>>>> d74acc785ee2bcaa7b4e276306c94bc11d3f4794
     ]
   },
   "ampFirstPages": []

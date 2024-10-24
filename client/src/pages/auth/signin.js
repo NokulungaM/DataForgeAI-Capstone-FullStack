@@ -8,6 +8,10 @@ const SignIn = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const handleForgotPassword = () => {
+    router.push("/auth/forgotPassword"); //Added onClick handler
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -36,7 +40,7 @@ const SignIn = () => {
         // Store the JWT token in localStorage
         localStorage.setItem("token", data.token); // Make sure 'data.token' contains the JWT
 
-        router.push("/landingPage"); // Navigate to a dashboard or desired page on successful sign-in
+        router.push("/search"); // Navigate to a dashboard or desired page on successful sign-in
       } else {
         setError(data.message || "Invalid credentials. Please try again.");
       }
@@ -83,10 +87,18 @@ const SignIn = () => {
                 {loading ? "Signing In..." : "Sign In"}
               </button>
             </div>
-            <div className="signin-footer">
+            <div className="signin-footer gap-1">
               <button type="button" onClick={() => router.push("/auth/signup")}>
                 Don't have an account? Sign up
               </button>
+            </div>
+            <div>
+              <button
+              onClick={handleForgotPassword}
+              className="text-sm text-blue-500 mt-2 hover:underline"
+              >
+               Forgot Password
+            </button>
             </div>
           </form>
         </div>

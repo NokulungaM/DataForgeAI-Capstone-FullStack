@@ -2,5 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+<<<<<<< HEAD
   "/": "pages/index.js"
+=======
+  "/search": "pages/search.js",
+  "/": "pages/index.js",
+  "/auth/signin": "pages/auth/signin.js"
+>>>>>>> d74acc785ee2bcaa7b4e276306c94bc11d3f4794
 }
