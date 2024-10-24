@@ -5,15 +5,15 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
   const [ingredients, setIngredients] = useState("");
-  const [recipeImage, setRecipeImage] = useState(null);
+  const [recipeImage, setRecipeImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
 
   // Handle file input change
-  const handleImageChange = (e) => {
-    setRecipeImage(e.target.files[0]);
-  };
+  // const handleImageChange = (e) => {
+  //   setRecipeImage(e.target.files[0]);
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
       setTitle("");
       setInstructions("");
       setIngredients("");
-      setRecipeImage(null);
+      setRecipeImage("");
       setIsCreating(false); // Close the form after successful submission
 
       onRecipeCreated(response.data);
@@ -69,7 +69,7 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
     setTitle("");
     setInstructions("");
     setIngredients("");
-    setRecipeImage(null);
+    setRecipeImage("");
     setError(null); // Clear any errors when closing
   };
 
@@ -162,10 +162,11 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
               Recipe Image
             </label>
             <input
-              type="file"
+              type="url"
               id="recipeImage"
-              accept="image/*"
-              onChange={handleImageChange}
+              accept="jpg,jpeg"
+              value={recipeImage}
+              onChange={(e) => setRecipeImage(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware'); // Middleware for authentication
-const { getAllUsers, deleteUser } = require('../controllers/adminController');
+const { getAllUsers, deleteUsers, deletePosts, getAllRecipes } = require('../controllers/adminController');
  const {registerUser, loginUser } = require('../controllers/userController');
 const { validateSignUp, validateSignIn, signOut} = require('../controllers/authController');
 
@@ -20,8 +20,15 @@ router.get("/users",
   authMiddleware,
   getAllUsers);
 
-// Admin-only route to delete a user
-router.delete("/users/:id", authMiddleware, deleteUser);
+router.get("/users/posts", authMiddleware, getAllRecipes)
+
+// Admin-only route to delete a list of users
+router.delete("/users/delete", authMiddleware, deleteUsers);
+
+//Admin route to delete user Posts
+router.delete("/users/posts/delete", authMiddleware, deletePosts);
+
+
 
 
 module.exports = router;

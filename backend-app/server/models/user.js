@@ -49,11 +49,23 @@ const userSchema = new Schema({
       createdAt: { type: Date, default: Date.now },
     },
   ],
-  name: {String,
-  profilePicture: String,
-  bio: String,
-  location: String,
-  },  
+
+  profilePicture: {
+    type: String,
+    default:
+      "https://t4.ftcdn.net/jpg/04/83/90/95/360_F_483909569_OI4LKNeFgHwvvVju60fejLd9gj43dIcd.jpg",
+  },
+
+  bio: {
+    type: String,
+    default: "A user with no bio",
+  },
+
+  location: {
+    type: String,
+    default: "No location provided",
+  },
+
   meals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Meal" }],
   Ingredients: [{ type: String }],
   postedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
