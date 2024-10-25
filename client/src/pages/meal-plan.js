@@ -2,6 +2,13 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Dialog } from '@headlessui/react';
 
+// Stable placeholder image URLs
+const placeholders = {
+  breakfast: 'https://via.placeholder.com/400x300.png?text=Breakfast',
+  lunch: 'https://via.placeholder.com/400x300.png?text=Lunch',
+  supper: 'https://via.placeholder.com/400x300.png?text=Supper',
+};
+
 // Button component
 const Button = ({ children, onClick, className, disabled }) => (
   <button
@@ -31,35 +38,30 @@ export default function MealPlan() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [token, setToken] = useState(null);
-  
+
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    console.log('Token from localStorage:', storedToken); // Check the token value
-    setToken(storedToken); // Set the token in the state
+    console.log('Token from localStorage:', storedToken);
+    setToken(storedToken);
   }, []);
-  
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!timeFrame || !targetCalories || !diet) {
       setError('Please fill in all fields');
       return;
     }
-  
-    // No need for storedToken, just use the token from state
-    console.log('Token from state:', token); // Log the token directly from the state
-  
+
     if (!token) {
       setError('User is not authenticated');
       return;
     }
-  
+
     try {
       setLoading(true);
       setError(null);
-  
+
       const response = await axios.get(`http://localhost:3001/meal-plan/meal-plan`, {
         params: {
           timeFrame,
@@ -67,27 +69,25 @@ export default function MealPlan() {
           diet,
         },
         headers: {
-          Authorization: `Bearer ${token}`, // Use the state `token` here
+          Authorization: `Bearer ${token}`,
         },
       });
-  
+
       setMealPlan(response.data);
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        // Token expired or invalid, handle re-authentication
         console.error('Token expired or invalid. Please log in again.');
         setError('Session expired. Please log in again.');
-        // Optionally, redirect the user to the login page
       } else {
         setError('Error fetching meal plan. Please try again.');
       }
-    
+    } finally {
+      setLoading(false);
     }
-  }
-  
+  };
 
-  const openModal = (meal) => {
-    setSelectedMeal(meal);
+  const openModal = (meal, mealType) => {
+    setSelectedMeal({ ...meal, type: mealType });
     setIsModalOpen(true);
   };
 
@@ -102,7 +102,6 @@ export default function MealPlan() {
 
       <Card>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Time Frame input */}
           <div>
             <label className="block text-gray-700">Time Frame:</label>
             <select
@@ -115,7 +114,6 @@ export default function MealPlan() {
             </select>
           </div>
 
-          {/* Target Calories input */}
           <div>
             <label className="block text-gray-700">Target Calories:</label>
             <input
@@ -126,7 +124,6 @@ export default function MealPlan() {
             />
           </div>
 
-          {/* Diet input */}
           <div>
             <label className="block text-gray-700">Diet:</label>
             <input
@@ -144,7 +141,6 @@ export default function MealPlan() {
             </datalist>
           </div>
 
-          {/* Submit button */}
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <>
@@ -165,21 +161,26 @@ export default function MealPlan() {
         </div>
       )}
 
-      {/* Meal Plan display */}
       {mealPlan && mealPlan.mealPlan && (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-    {mealPlan.mealPlan.map((meal, index) => (
-      <Card key={index} onClick={() => openModal(meal)}>
-        <img src={meal.image} alt={meal.title} className="w-full h-48 object-cover rounded-md mb-4" />
-        <h3 className="text-lg font-bold">{meal.title}</h3>
-      </Card>
-    ))}
-  </div>
-)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+          {mealPlan.mealPlan.map((meal, index) => {
+            const mealType = index === 0 ? 'breakfast' : index === 1 ? 'lunch' : 'supper';
+            const imageSrc = placeholders[mealType] || placeholders.supper;
 
+            return (
+              <Card key={index} onClick={() => openModal(meal, mealType)}>
+                <img
+                  src={imageSrc}
+                  alt={meal.title || `${mealType} placeholder`}
+                  className="w-full h-48 object-cover rounded-md mb-4"
+                />
+                <h3 className="text-lg font-bold">{meal.title || mealType.charAt(0).toUpperCase() + mealType.slice(1)}</h3>
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
-
-      {/* Modal for showing detailed meal information */}
       <Dialog
         open={isModalOpen}
         onClose={closeModal}
@@ -192,13 +193,13 @@ export default function MealPlan() {
           {selectedMeal && (
             <>
               <img
-                src={selectedMeal.image || 'default-image-url.jpg'}
+                src={placeholders[selectedMeal.type]}
                 alt={selectedMeal.title}
                 className="w-full h-64 object-cover rounded-t-lg"
               />
               <h3 className="text-2xl font-bold mt-4">{selectedMeal.title}</h3>
               <p className="mt-2 text-gray-700">
-                <strong>Meal Type:</strong> {selectedMeal.type || 'N/A'}
+                <strong>Meal Type:</strong> {selectedMeal.type}
               </p>
               <p className="mt-2 text-gray-700 whitespace-pre-wrap">
                 <strong>Cooking Instructions:</strong> {selectedMeal.instructions || 'No instructions available.'}
