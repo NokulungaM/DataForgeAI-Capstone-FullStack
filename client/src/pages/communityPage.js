@@ -6,7 +6,7 @@ import CreateRecipe from "../components/createRecipe";
 import { Heart, MessageCircleMore } from "lucide-react";
 import TrendingRecipes from "../components/trendingRecipes";
 import FoodNewsSlideshow from "../components/foodNews";
-// import UserProfile from "../components/userProfile";
+import UserProfile from "../components/userProfile";
 
 const formatTimeAgo = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000);
@@ -31,6 +31,7 @@ const formatTimeAgo = (date) => {
 
 const CommunityPage = () => {
   const [posts, setPosts] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [trendingRecipes, setTrendingRecipes] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -45,6 +46,21 @@ const CommunityPage = () => {
       setToken(storedToken);
     }
   }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/profile/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProfile(response.data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+    if (token) fetchProfile();
+  }, [token]);
 
   
   useEffect(() => {
@@ -69,6 +85,12 @@ const CommunityPage = () => {
 
         // Assuming the response includes user details
         setPosts(response.data);
+
+        const sortedPosts = response.data.sort(
+          (a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)
+        );
+
+        setPosts(sortedPosts);
 
         // Fetch trending recipes (with most likes)
         const fetchTrendingRecipes = async () => {
@@ -163,7 +185,7 @@ const CommunityPage = () => {
         {/* Create Recipe Button */}
         <div className="flex justify-center mb-8">
           <button
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-blue-600 transition"
+            className="bg-green-700 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-green-300 transition"
             onClick={() => setIsCreatingRecipe(true)}
           >
             New Recipe Here!
@@ -171,16 +193,11 @@ const CommunityPage = () => {
         </div>
 
         {/* Main Layout: Flex Container */}
-        <div className="flex justify-center gap-5">
-          {/* Left Side: User Profile with 20px padding */}
-          {/* <div className="w-full md:w-1/4 px-5">
-            {profile ? (
-              <UserProfile profile={profile} />
-            ) : (
-              <p>Loading profile...</p>
-            )}
-          </div> */}
-
+        <div className="flex justify-center gap-4">
+          <div className="w-full md:w-1/4 px-5">
+            <UserProfile user={profile} />
+            <TrendingRecipes recipes={trendingRecipes} />
+          </div>
           {/* Center: Community Posts */}
           <div className="w-full md:w-1/2">
             <div className="flex flex-col items-center gap-4">
@@ -192,14 +209,14 @@ const CommunityPage = () => {
                     style={{ width: "38rem", height: "auto" }} // Fixed width and dynamic height
                   >
                     <div className="flex items-center mb-2">
-                      {/* <img
+                      <img
                         src={
                           post.userId?.profilePicture ||
                           "https://png.pngitem.com/pimgs/s/524-5246388_anonymous-user-hd-png-download.png"
                         }
                         alt="Profile"
                         className="w-10 h-10 rounded-full mr-2"
-                      /> */}
+                      />
                       <div>
                         <p className="text-gray-800 font-semibold text-xs">
                           {post.userId?.username || "Anonymous"}
@@ -220,7 +237,13 @@ const CommunityPage = () => {
                       <img
                         src={post.recipeImage}
                         alt={post.title}
-                        className="mb-2 rounded-lg object-cover h-28 w-full"
+                        className="mb-2 rounded-lg object-cover h-80 w-100"
+                        style={{ objectFit: "cover" }}
+                        onError={(e) => {
+                          e.target.onerror = null; // Prevent infinite loop if image fails to load
+                          e.target.src =
+                            "https://www.maggi.co.uk/sites/default/files/styles/home_stage_944_531/public/srh_recipes/ecf00e5c370f20e168f182e68c597e58.jpg?h=67eabc4d&itok=hj14wZaS"; // Set placeholder image
+                        }}
                       />
                     )}
 
@@ -236,7 +259,7 @@ const CommunityPage = () => {
 
                     {post.instructions && post.instructions.length > 100 && (
                       <button
-                        className="text-blue-600 hover:underline text-xs"
+                        className="text-grey-700 hover:underline text-xs"
                         onClick={() => toggleExpandPost(post._id)}
                       >
                         {expandedPostId === post._id
@@ -244,6 +267,17 @@ const CommunityPage = () => {
                           : "Read More"}
                       </button>
                     )}
+                    <h5 className="text-l font-bold mb-2">Ingredients:</h5>
+                    <ul className="flex flex-wrap gap-2">
+                      {post.ingredients.map((ingredient) => (
+                        <li
+                          key={ingredient}
+                          className="text-gray-600 text-sm px-1 py-1 rounded-lg"
+                        >
+                          {ingredient.trim()}
+                        </li>
+                      ))}
+                    </ul>
 
                     {/* Like and Comment Buttons */}
                     <div className="flex items-center mt-2 space-x-4 text-gray-600 ">
@@ -276,7 +310,7 @@ const CommunityPage = () => {
           {/* Right Side: Active Users, Trending Recipes, Food News with 20px padding */}
           <div className="w-full md:w-1/4 px-5">
             <ActiveUsers users={activeUsers} />
-            <TrendingRecipes recipes={trendingRecipes} />
+
             <FoodNewsSlideshow />
           </div>
         </div>

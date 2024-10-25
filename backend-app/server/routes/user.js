@@ -51,7 +51,7 @@ router.get("/community/all-recipes", authMiddleware, getAllRecipes);
 router.get("/community/active-users", authMiddleware, activeUsers)
 
 //Create a new recipe
-router.post("/user-recipes", authMiddleware,  upload.single("recipeImage") , createRecipe);
+router.post("/user-recipes", authMiddleware, createRecipe);
 
 // Get a single recipe by ID
 router.get("/community/find-recipe/:id", authMiddleware, getOneRecipe);

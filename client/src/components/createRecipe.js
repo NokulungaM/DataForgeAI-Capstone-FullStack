@@ -10,11 +10,7 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
   const [error, setError] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  // Handle file input change
-  // const handleImageChange = (e) => {
-  //   setRecipeImage(e.target.files[0]);
-  // };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,26 +22,24 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
     setLoading(true);
     setError(null);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("instructions", instructions);
-    formData.append(
-      "ingredients",
-      ingredients.split(",").map((ingredient) => ingredient.trim())
-    );
-
-    if (recipeImage) {
-      formData.append("recipeImage", recipeImage);
-    }
+    // Convert the comma-separated string to an array
+    const ingredientsArray = ingredients
+      .split(",")
+      .map((ingredient) => ingredient.trim());
 
     try {
       const response = await axios.post(
         "http://localhost:3001/user/user-recipes",
-        formData,
+        {
+          title,
+          instructions,
+          ingredients: ingredientsArray, 
+          recipeImage, // Since this is a URL, just send it as a normal field
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -54,11 +48,14 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
       setInstructions("");
       setIngredients("");
       setRecipeImage("");
-      setIsCreating(false); // Close the form after successful submission
 
       onRecipeCreated(response.data);
     } catch (error) {
-      setError("Failed to post the recipe. Please try again.");
+      console.error(error.response.data);
+      setError(
+        error.response.data.message ||
+          "Failed to post the recipe. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -164,7 +161,6 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
             <input
               type="url"
               id="recipeImage"
-              accept="jpg,jpeg"
               value={recipeImage}
               onChange={(e) => setRecipeImage(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
