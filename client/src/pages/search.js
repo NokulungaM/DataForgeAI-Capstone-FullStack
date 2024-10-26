@@ -9,11 +9,29 @@ const Search = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [currentAudio, setCurrentAudio] = useState(null); // Track current audio
-  const [isPlaying, setIsPlaying] = useState(false); // Track playing state
-  const [audioQueue, setAudioQueue] = useState([]); // Queue for multiple audio URLs
-  const [audioIndex, setAudioIndex] = useState(0); // Current index in the audio queue
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioQueue, setAudioQueue] = useState([]);
+  const [audioIndex, setAudioIndex] = useState(0);
 
+  // Function to fetch random recipes
+  const fetchRandomRecipes = async () => {
+    setLoading(true);
+    setError(null); // Reset any previous error
+
+    try {
+      const response = await axios.get('http://localhost:3001/random/recipes/random?limitLicense=true&number=9');
+      if (response.status !== 200) throw new Error('Failed to fetch random recipes');
+      setRecipes(response.data);
+    } catch (error) {
+      console.error('Error fetching random recipes:', error);
+      setError('Failed to fetch random recipes. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Function to search recipes based on ingredients
   const handleSearch = async () => {
     if (!query.trim()) return; // Avoid empty queries
 
@@ -44,6 +62,11 @@ const Search = () => {
     }
   };
 
+  // Fetch random recipes on component mount
+  useEffect(() => {
+    fetchRandomRecipes();
+  }, []);
+
   const openModal = (recipe) => {
     setSelectedRecipe(recipe);
     setIsModalOpen(true);
@@ -62,9 +85,9 @@ const Search = () => {
   const playAudioInstructions = async (recipe) => {
     if (recipe.ttsUrl) {
       const ttsUrls = recipe.ttsUrl.split(', ');
-      setAudioQueue(ttsUrls); // Store the audio URLs
-      setAudioIndex(0); // Start from the first URL
-      playNextAudio(0, ttsUrls); // Play the first audio
+      setAudioQueue(ttsUrls);
+      setAudioIndex(0);
+      playNextAudio(0, ttsUrls);
     }
   };
 
@@ -77,19 +100,19 @@ const Search = () => {
         .then((response) => {
           const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
           const audio = new Audio(URL.createObjectURL(audioBlob));
-          setCurrentAudio(audio); // Track the current audio
+          setCurrentAudio(audio);
 
           audio.play();
           setIsPlaying(true);
 
           audio.addEventListener('ended', () => {
             setIsPlaying(false);
-            playNextAudio(index + 1, ttsUrls); // Play next audio when this one ends
+            playNextAudio(index + 1, ttsUrls);
           });
         })
         .catch((error) => {
           console.error('Error playing audio:', error);
-          playNextAudio(index + 1, ttsUrls); // Skip to next if there's an error
+          playNextAudio(index + 1, ttsUrls);
         });
     }
   };
