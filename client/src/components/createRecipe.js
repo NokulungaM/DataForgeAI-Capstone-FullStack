@@ -72,7 +72,7 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
 
   return (
     <div className="bg-white p-6 mb-6 rounded-lg shadow-lg max-w-md">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Create a Recipe</h2>
+      <h5 className="text-xl font-bold text-gray-800 mb-4">Post A Recipe</h5>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
@@ -81,7 +81,7 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
           className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
           onClick={() => setIsCreating(true)}
         >
-          Create Recipe
+          Here!
         </button>
       )}
 
@@ -97,23 +97,24 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
               >
                 Title
               </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter recipe title"
-              />
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={handleCloseForm}
-                className="bg-red-200 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
-              >
-                Close
-              </button>
+              <div className="flex justify-between items-center">
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter recipe title"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleCloseForm}
+                  className="bg-red-200 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
 

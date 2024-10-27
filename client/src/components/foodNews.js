@@ -79,7 +79,7 @@ const FoodNewsSlideshow = () => {
   }, []);
 
   return (
-    <div className="w-full md:w-1/0.5 bg-white border border-gray-400 rounded-lg shadow-lg p-4 ml-4">
+    <div className="w-full md:w-1/0.25 bg-white border border-gray-400 rounded-lg shadow-lg p-4 ml-4">
       <h2 className="text-lg font-bold text-gray-400 mb-4">
         Food News For You
       </h2>

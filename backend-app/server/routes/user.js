@@ -20,6 +20,7 @@ const {
   getOneRecipe,
   likeRecipe,
   addComment,
+  getRecipeComments,
   updateComment,
   deleteComment,
   deleteRecipe,
@@ -60,7 +61,11 @@ router.get("/community/find-recipe/:id", authMiddleware, getOneRecipe);
 router.patch("/community/recipes/:id/like", authMiddleware, likeRecipe);
 
 // Add a comment to a recipe
-router.patch("/community/recipe/:id/comment", authMiddleware, addComment);
+router.post("/community/recipe/:id/comment", authMiddleware, addComment);
+
+// Get comments for a recipe
+router.get("/community/recipes/:id/comments", authMiddleware, getRecipeComments);
+
 
 // Update a comment in a recipe
 router.patch(

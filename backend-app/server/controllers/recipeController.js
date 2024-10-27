@@ -310,25 +310,23 @@ const likeRecipe = async (req, res) => {
       return res.status(400).json({ error: "Cannot like your own recipe" });
     }
 
+    
     // Toggle like
     const isLiked = recipe.likes.includes(userId);
     const update = isLiked
       ? { $pull: { likes: userId } }
       : { $addToSet: { likes: userId } };
-
     const updatedRecipe = await userRecipe.findByIdAndUpdate(id, update, {
       new: true,
     });
-
-    await recipe.save()
-
+    await recipe.save();
     const message = isLiked
       ? "Recipe unliked successfully"
       : "Recipe liked successfully";
-
     res.status(200).json({
       message,
       recipe: updatedRecipe,
+      likes: updatedRecipe.likes,
     });
   } catch (error) {
     console.error("Error liking recipe:", error);
@@ -402,7 +400,7 @@ const getRecipeComments = async (req, res) => {
 
     // Populate comments with user details
     const populatedComments = await Comment.find({ recipeId: id })
-      .populate("userId", "name")
+      .populate("userId", "username profilePicture")
       .sort({ createdAt: -1 });
 
     res.status(200).json(populatedComments);
