@@ -140,7 +140,7 @@ const Search = () => {
   }, [currentAudio]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-800 to-blue-700 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-white-800 to-gray-300 text-black p-6">
       {/* Header Section */}
       <div className="flex flex-col items-center">
         <h1 className="text-4xl font-bold mb-6">What's cooking?</h1>
