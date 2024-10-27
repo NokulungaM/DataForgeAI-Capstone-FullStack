@@ -32,6 +32,11 @@
       "static/chunks/main.js",
       "static/chunks/pages/meal-plan.js"
     ],
+    "/meal-plan": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/meal-plan.js"
+    ],
     "/search": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
