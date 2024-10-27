@@ -5,16 +5,12 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
   const [title, setTitle] = useState("");
   const [instructions, setInstructions] = useState("");
   const [ingredients, setIngredients] = useState("");
-  const [recipeImage, setRecipeImage] = useState(null);
+  const [recipeImage, setRecipeImage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
 
-  // Handle file input change
-  const handleImageChange = (e) => {
-    setRecipeImage(e.target.files[0]);
-  };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,26 +22,24 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
     setLoading(true);
     setError(null);
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("instructions", instructions);
-    formData.append(
-      "ingredients",
-      ingredients.split(",").map((ingredient) => ingredient.trim())
-    );
-
-    if (recipeImage) {
-      formData.append("recipeImage", recipeImage);
-    }
+    // Convert the comma-separated string to an array
+    const ingredientsArray = ingredients
+      .split(",")
+      .map((ingredient) => ingredient.trim());
 
     try {
       const response = await axios.post(
         "http://localhost:3001/user/user-recipes",
-        formData,
+        {
+          title,
+          instructions,
+          ingredients: ingredientsArray, 
+          recipeImage, // Since this is a URL, just send it as a normal field
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "application/json",
           },
         }
       );
@@ -53,12 +47,15 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
       setTitle("");
       setInstructions("");
       setIngredients("");
-      setRecipeImage(null);
-      setIsCreating(false); // Close the form after successful submission
+      setRecipeImage("");
 
       onRecipeCreated(response.data);
     } catch (error) {
-      setError("Failed to post the recipe. Please try again.");
+      console.error(error.response.data);
+      setError(
+        error.response.data.message ||
+          "Failed to post the recipe. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -69,13 +66,13 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
     setTitle("");
     setInstructions("");
     setIngredients("");
-    setRecipeImage(null);
+    setRecipeImage("");
     setError(null); // Clear any errors when closing
   };
 
   return (
     <div className="bg-white p-6 mb-6 rounded-lg shadow-lg max-w-md">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Create a Recipe</h2>
+      <h5 className="text-xl font-bold text-gray-800 mb-4">Post A Recipe</h5>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
@@ -84,7 +81,7 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
           className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
           onClick={() => setIsCreating(true)}
         >
-          Create Recipe
+          Here!
         </button>
       )}
 
@@ -100,23 +97,24 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
               >
                 Title
               </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter recipe title"
-              />
-            </div>
-            <div>
-              <button
-                type="button"
-                onClick={handleCloseForm}
-                className="bg-red-200 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
-              >
-                Close
-              </button>
+              <div className="flex justify-between items-center">
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter recipe title"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleCloseForm}
+                  className="bg-red-200 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
 
@@ -162,10 +160,10 @@ const CreateRecipe = ({ token, onRecipeCreated }) => {
               Recipe Image
             </label>
             <input
-              type="file"
+              type="url"
               id="recipeImage"
-              accept="image/*"
-              onChange={handleImageChange}
+              value={recipeImage}
+              onChange={(e) => setRecipeImage(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>

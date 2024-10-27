@@ -41,27 +41,46 @@ const fetchAndDisplayRecipes = async (req, res) => {
   }
 };
 
-//Create a new recipe
+
+// Create a new recipe
 const createRecipe = async (req, res) => {
-  const { title, ingredients, instructions} = req.body;
-  const recipeImage = req.file.filename; // Get uploaded image filename
+  const { title, instructions, ingredients, recipeImage } = req.body;
+
+  // Check if all fields are present and properly formatted
+  if (
+    !title ||
+    !instructions ||
+    !Array.isArray(ingredients) ||
+    ingredients.length === 0
+  ) {
+    return res
+      .status(400)
+      .json({ message: "Please provide all required fields" });
+  }
+
+  // Trim each ingredient to avoid empty entries
   const ingredientsArray = ingredients
-    .split(",")
-    .map((ingredient) => ingredient.trim());
+    .map((ingredient) => ingredient.trim())
+    .filter(Boolean);
+
+  // Create new recipe object
   const recipe = new userRecipe({
     title,
-    ingredients : ingredientsArray,
     instructions,
+    ingredients: ingredientsArray,
     recipeImage,
-    userId: req.user._id,
+    userId: req.user._id, // Assuming req.user._id contains the user ID from authentication middleware
   });
+
   try {
+    // Save the recipe to the database
     await recipe.save();
-    res.status(201).json(recipe);
+    res.status(201).json(recipe); // Successfully created
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error.message }); // Handle any errors
   }
 };
+
 
 //Get all recipes
 const getAllRecipes = async (req, res) => {
@@ -69,9 +88,11 @@ const getAllRecipes = async (req, res) => {
 
     const recipes = await userRecipe
       .find()
-      .populate("userId","username name profilePicture")
+      .populate("userId", "username profilePicture")
+      .populate("recipeImage")
       .populate("likes", "userId")
       .populate("comments", "userId text")
+      
       .exec();
     if (!recipes) return res.status(404).json({ message: "No recipes found" });
     res.json(recipes);
@@ -289,25 +310,23 @@ const likeRecipe = async (req, res) => {
       return res.status(400).json({ error: "Cannot like your own recipe" });
     }
 
+    
     // Toggle like
     const isLiked = recipe.likes.includes(userId);
     const update = isLiked
       ? { $pull: { likes: userId } }
       : { $addToSet: { likes: userId } };
-
     const updatedRecipe = await userRecipe.findByIdAndUpdate(id, update, {
       new: true,
     });
-
-    await recipe.save()
-
+    await recipe.save();
     const message = isLiked
       ? "Recipe unliked successfully"
       : "Recipe liked successfully";
-
     res.status(200).json({
       message,
       recipe: updatedRecipe,
+      likes: updatedRecipe.likes,
     });
   } catch (error) {
     console.error("Error liking recipe:", error);
@@ -381,7 +400,7 @@ const getRecipeComments = async (req, res) => {
 
     // Populate comments with user details
     const populatedComments = await Comment.find({ recipeId: id })
-      .populate("userId", "name")
+      .populate("userId", "username profilePicture")
       .sort({ createdAt: -1 });
 
     res.status(200).json(populatedComments);

@@ -16,6 +16,10 @@ const commentSchema = new mongoose.Schema({
     ref: "Recipe",
     required: true,
   },
+  dateCreated: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Comment = mongoose.model("Comment", commentSchema);
