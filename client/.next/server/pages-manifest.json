@@ -2,7 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+<<<<<<< HEAD
   "/": "pages/index.js",
   "/auth/forgotPassword": "pages/auth/forgotPassword.js",
   "/auth/resetPassword": "pages/auth/resetPassword.js"
+=======
+  "/communityPage": "pages/communityPage.js"
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60
 }

@@ -48,4 +48,8 @@ const ForgotPassword = () => {
   );
 };
 
+<<<<<<< HEAD
 export default ForgotPassword;
+=======
+export default ForgotPassword;
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
+import axios from 'axios';
 
 const Search = () => {
   const [recipes, setRecipes] = useState([]);
@@ -7,22 +8,64 @@ const Search = () => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioQueue, setAudioQueue] = useState([]);
+  const [audioIndex, setAudioIndex] = useState(0);
 
-  const handleSearch = async () => {
-    if (!query.trim()) return; // Avoid empty queries
-
+  // Function to fetch random recipes
+  const fetchRandomRecipes = async () => {
     setLoading(true);
+    setError(null); // Reset any previous error
+
     try {
-      const response = await fetch(`http://localhost:3001/api/recipes?ingredients=${query}`);
-      if (!response.ok) throw new Error('Failed to fetch recipes');
-      const data = await response.json();
-      setRecipes(data);
+      const response = await axios.get('http://localhost:3001/random/recipes/random?limitLicense=true&number=9');
+      if (response.status !== 200) throw new Error('Failed to fetch random recipes');
+      setRecipes(response.data);
     } catch (error) {
-      console.error('Error fetching recipes:', error);
+      console.error('Error fetching random recipes:', error);
+      setError('Failed to fetch random recipes. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  // Function to search recipes based on ingredients
+  const handleSearch = async () => {
+    if (!query.trim()) return; // Avoid empty queries
+
+    setLoading(true);
+    setError(null); // Reset any previous error
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      setError('User not authenticated');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`http://localhost:3001/api/recipes?ingredients=${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status !== 200) throw new Error('Failed to fetch recipes');
+      setRecipes(response.data);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      setError('Failed to fetch recipes. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch random recipes on component mount
+  useEffect(() => {
+    fetchRandomRecipes();
+  }, []);
 
   const openModal = (recipe) => {
     setSelectedRecipe(recipe);
@@ -32,7 +75,69 @@ const Search = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedRecipe(null);
+    if (currentAudio) {
+      currentAudio.pause();
+      setCurrentAudio(null);
+      setIsPlaying(false);
+    }
   };
+
+  const playAudioInstructions = async (recipe) => {
+    if (recipe.ttsUrl) {
+      const ttsUrls = recipe.ttsUrl.split(', ');
+      setAudioQueue(ttsUrls);
+      setAudioIndex(0);
+      playNextAudio(0, ttsUrls);
+    }
+  };
+
+  const playNextAudio = (index, ttsUrls) => {
+    if (index < ttsUrls.length) {
+      const url = ttsUrls[index];
+      const proxyUrl = `http://localhost:3001/proxy-tts?url=${encodeURIComponent(url)}`;
+
+      axios.get(proxyUrl, { responseType: 'arraybuffer' })
+        .then((response) => {
+          const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+          const audio = new Audio(URL.createObjectURL(audioBlob));
+          setCurrentAudio(audio);
+
+          audio.play();
+          setIsPlaying(true);
+
+          audio.addEventListener('ended', () => {
+            setIsPlaying(false);
+            playNextAudio(index + 1, ttsUrls);
+          });
+        })
+        .catch((error) => {
+          console.error('Error playing audio:', error);
+          playNextAudio(index + 1, ttsUrls);
+        });
+    }
+  };
+
+  const toggleAudioPlayback = () => {
+    if (currentAudio) {
+      if (isPlaying) {
+        currentAudio.pause();
+        setIsPlaying(false);
+      } else {
+        currentAudio.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Clean up audio when the component unmounts
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        setCurrentAudio(null);
+      }
+    };
+  }, [currentAudio]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-800 to-blue-700 text-white p-6">
@@ -54,6 +159,7 @@ const Search = () => {
             Find
           </button>
         </div>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
 
       {/* Results Section */}
@@ -107,6 +213,24 @@ const Search = () => {
               <p className="mt-2 text-gray-700 whitespace-pre-wrap">
                 {selectedRecipe.instructions || 'No instructions available.'}
               </p>
+              {selectedRecipe.ttsUrl && (
+                <>
+                  <button
+                    className="mt-4 bg-teal-500 text-white py-2 px-4 rounded hover:bg-teal-600"
+                    onClick={() => playAudioInstructions(selectedRecipe)}
+                  >
+                    {isPlaying ? 'Pause Audio Instructions' : 'Play Audio Instructions'}
+                  </button>
+                  {currentAudio && (
+                    <button
+                      className="ml-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+                      onClick={toggleAudioPlayback}
+                    >
+                      {isPlaying ? 'Pause' : 'Resume'}
+                    </button>
+                  )}
+                </>
+              )}
             </>
           )}
         </div>

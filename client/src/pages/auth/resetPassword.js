@@ -21,7 +21,11 @@ const ResetPassword = () => {
     }
 
     try {
+<<<<<<< HEAD
       const response = await axios.post("/api/auth/reset-password", {
+=======
+      const response = await axios.post("http://localhost:3001/auth/resetPassword", {
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60
         token,
         newPassword,
       });
@@ -61,4 +65,8 @@ const ResetPassword = () => {
   );
 };
 
+<<<<<<< HEAD
 export default ResetPassword;
+=======
+export default ResetPassword;
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60

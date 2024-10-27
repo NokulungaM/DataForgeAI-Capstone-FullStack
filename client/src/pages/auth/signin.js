@@ -9,13 +9,28 @@ const SignIn = () => {
   const router = useRouter();
 
   const handleForgotPassword = () => {
+<<<<<<< HEAD
     router.push("/auth/forgotPassword");
   };
+=======
+    router.push("/auth/forgotPassword"); //Added onClick handler
+  };
+
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+<<<<<<< HEAD
+=======
+    if (!username || !password) {
+      setError("Please fill in both fields");
+      setLoading(false);
+      return;
+    }
+
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60
     const userData = { username, password };
 
     try {
@@ -29,6 +44,13 @@ const SignIn = () => {
 
       if (response.ok) {
         console.log("Sign-in successful", data);
+<<<<<<< HEAD
+=======
+
+        // Store the JWT token in localStorage
+        localStorage.setItem("token", data.token); // Make sure 'data.token' contains the JWT
+
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60
         router.push("/search"); // Navigate to a dashboard or desired page on successful sign-in
       } else {
         setError(data.message || "Invalid credentials. Please try again.");
@@ -80,7 +102,12 @@ const SignIn = () => {
               <button type="button" onClick={() => router.push("/auth/signup")}>
                 Don't have an account? Sign up
               </button>
+<<<<<<< HEAD
               <div>
+=======
+            </div>
+            <div>
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60
               <button
               onClick={handleForgotPassword}
               className="text-sm text-blue-500 mt-2 hover:underline"
@@ -88,7 +115,10 @@ const SignIn = () => {
                Forgot Password
             </button>
             </div>
+<<<<<<< HEAD
             </div>
+=======
+>>>>>>> 3d785ce78ccb1471d84f36ca338843c1ecdf2e60
           </form>
         </div>
       </div>

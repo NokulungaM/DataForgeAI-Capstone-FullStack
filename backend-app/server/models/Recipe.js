@@ -5,6 +5,7 @@ const ingredientSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
   amount: {
     type: Number,
     required: true,
@@ -44,10 +45,10 @@ const ingredientSchema = new mongoose.Schema({
 });
 
 const recipeSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-    required: true,
-  },
+  // id: {
+  //   type: Number,
+  //   required: true,
+  // },
   title: {
     type: String,
     required: true,
@@ -73,13 +74,11 @@ const recipeSchema = new mongoose.Schema({
   unusedIngredients: {
     type: [ingredientSchema],
   },
-  likes: {
-    type: Number,
-  },
   instructions: {
   type: [String],
   required: true,
   },
+  ttsUrl: { type: String, default: null },
 });
 
 const Recipe = mongoose.model('Recipe', recipeSchema);
