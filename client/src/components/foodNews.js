@@ -61,7 +61,7 @@ const foodNewsData = [
       "Proper hydration is key to weight loss. Here's how drinking enough water can help you shed pounds.",
     url: "#",
     image:
-      "https://sdfatloss.com/wp-content/uploads/2023/04/fit-woman-drinking-infused-water.jpg",
+      "https://media.post.rvohealth.io/wp-content/uploads/sites/3/2023/10/drinking_water_GettyImages1398080909_Thumb-732x549.jpg",
   },
 ];
 
@@ -79,7 +79,7 @@ const FoodNewsSlideshow = () => {
   }, []);
 
   return (
-    <div className="w-full md:w-1/0.5 bg-white border border-gray-400 rounded-lg shadow-lg p-4 ml-4">
+    <div className="w-full md:w-1/0.25 bg-white border border-gray-400 rounded-lg shadow-lg p-4 ml-4">
       <h2 className="text-lg font-bold text-gray-400 mb-4">
         Food News For You
       </h2>
@@ -103,7 +103,7 @@ const FoodNewsSlideshow = () => {
         </p>
         {foodNewsData[currentIndex].url && (
           <a
-            href={foodNewsData[currentIndex].url}
+            href="https://www.foodandwine.com/news"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-600 hover:underline text-sm"

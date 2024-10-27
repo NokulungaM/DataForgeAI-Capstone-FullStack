@@ -33,7 +33,7 @@ const port =
 // CORS FOR FRONTEND ACCESS TO THIS SERVER   
 app.use(cors({
   origin: "http://localhost:3000",  // Frontend URL
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true,
   allowedHeaders: ["Authorization", "Content-Type"],  // Ensure Authorization is allowed
 }));
