@@ -13,17 +13,17 @@ const FeaturedRecipes = ({ recipes }) => {
   const carouselInterval = useRef(null);
 
   useEffect(() => {
-    startCarousel(); // Start carousel on mount
+    startCarousel();
     return () => {
-      stopCarousel(); // Stop carousel on unmount
+      stopCarousel();
     };
   }, [currentIndex]);
 
   const startCarousel = () => {
-    stopCarousel(); // Clear any previous interval
+    stopCarousel();
     carouselInterval.current = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % recipes.length);
-    }, 5000); // Change recipe every 5 seconds
+    }, 5000);
   };
 
   const stopCarousel = () => {
@@ -33,15 +33,15 @@ const FeaturedRecipes = ({ recipes }) => {
   const openModal = (recipe) => {
     setSelectedRecipe(recipe);
     setIsModalOpen(true);
-    stopCarousel(); // Stop carousel when modal is opened
-    stopCurrentAudio(); // Stop any current audio playing
+    stopCarousel();
+    stopCurrentAudio();
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedRecipe(null);
-    startCarousel(); // Resume carousel when modal is closed
-    stopCurrentAudio(); // Stop any audio playback
+    startCarousel();
+    stopCurrentAudio();
   };
 
   const stopCurrentAudio = () => {
@@ -54,16 +54,16 @@ const FeaturedRecipes = ({ recipes }) => {
 
   const playAudioInstructions = (recipe) => {
     if (recipe.ttsUrl) {
-      const ttsUrls = recipe.ttsUrl.split(', '); // Assuming multiple TTS URLs
-      setAudioQueue(ttsUrls); // Store the audio URLs
-      setAudioIndex(0); // Start from the first URL
-      playNextAudio(0, ttsUrls); // Play the first audio
+      const ttsUrls = recipe.ttsUrl.split(', ');
+      setAudioQueue(ttsUrls);
+      setAudioIndex(0);
+      playNextAudio(0, ttsUrls);
     } else if (recipe.instructions) {
-      const instructionsChunks = splitInstructions(recipe.instructions, 300); // Split instructions into chunks
-      const audioUrls = instructionsChunks.map(chunk => generateTtsUrl(chunk)); // Generate TTS URLs for each chunk
-      setAudioQueue(audioUrls); // Store the audio URLs
-      setAudioIndex(0); // Start from the first URL
-      playNextAudio(0, audioUrls); // Play the first audio
+      const instructionsChunks = splitInstructions(recipe.instructions, 300);
+      const audioUrls = instructionsChunks.map(chunk => generateTtsUrl(chunk));
+      setAudioQueue(audioUrls);
+      setAudioIndex(0);
+      playNextAudio(0, audioUrls);
     }
   };
 
@@ -78,24 +78,24 @@ const FeaturedRecipes = ({ recipes }) => {
           const audio = new Audio(URL.createObjectURL(audioBlob));
 
           audio.onended = () => {
-            playNextAudio(index + 1, ttsUrls); // Play the next audio URL in the queue
+            playNextAudio(index + 1, ttsUrls);
           };
 
           audio.onerror = (error) => {
             console.error('Error playing audio:', error);
-            playNextAudio(index + 1, ttsUrls); // Skip to the next audio URL if there's an error
+            playNextAudio(index + 1, ttsUrls);
           };
 
-          setCurrentAudio(audio); // Track the current audio element
+          setCurrentAudio(audio);
           audio.play().catch(error => console.error('Error playing audio:', error));
-          setIsPlaying(true); // Update playing state
+          setIsPlaying(true);
         })
         .catch((error) => {
           console.error('Error fetching TTS audio:', error);
-          playNextAudio(index + 1, ttsUrls); // Skip to the next audio URL if there's a fetch error
+          playNextAudio(index + 1, ttsUrls);
         });
     } else {
-      setIsPlaying(false); // No more audio to play, reset playing state
+      setIsPlaying(false);
     }
   };
 
@@ -108,92 +108,138 @@ const FeaturedRecipes = ({ recipes }) => {
   };
 
   const generateTtsUrl = (text) => {
-    // This is a placeholder for your TTS URL generation logic
     return `http://your-tts-service.com/generate?text=${encodeURIComponent(text)}`;
   };
 
   return (
-    <div className="relative w-full max-w-lg mx-auto">
-      <div className="bg-cyan text-black rounded-lg shadow-md overflow-hidden cursor-pointer">
-        <img
-          src={recipes[currentIndex]?.image || 'default-image-url.jpg'}
-          alt={recipes[currentIndex]?.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="p-4">
-          <h3 className="text-lg font-bold">{recipes[currentIndex]?.title}</h3>
-          <button
-            className="ml-4 text-blue-500 font-semibold hover:underline"
-            onClick={() => openModal(recipes[currentIndex])}
-          >
-            Read More
-          </button>
+    <div className="relative w-full max-w-5xl mx-auto mt-8">
+      {/* Hero Section */}
+      <div className="mb-12 grid grid-cols-2 gap-6">
+        <h1 className="text-6xl font-bold tracking-wider mb-6 text-left"> {/* Heading aligned to left */}
+          Live it up,<br />
+          DishDash style
+        </h1>
+        <p className="text-s text-gray-700 max-w-3xl">
+          Discover a world of recipes, crafted for you to enjoy and explore the flavors of different cuisines. Whether you're looking for quick meals or gourmet dishes, DishDash has you covered.
+        </p>
+      </div>
+
+      <div className="mb-12"></div>
+
+      {/* Flex Container for Chef, Text, and Recipe Card */}
+      <div className="grid grid-cols-3 gap-6">
+        {/* Restaurant Compartment */}
+        <a href="https://kauai.co.za/" target="_blank" rel="noopener noreferrer"> {/* Link added here */}
+          <div className="bg-green-400 shadow-md rounded-lg overflow-hidden flex flex-col"> {/* Compartment set to green-400 */}
+            <img
+              src="/kauai.jpg"
+              alt="Chef"
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h3 className="text-lg font-bold">Suggested restaurant</h3>
+              <p className="text-gray-700">From Recipes to Food, we have all your favourite restaurants.</p>
+              <a href="https://kauai.co.za/" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block bg-green-500 text-white font-semibold hover:bg-green-600 transition duration-200 px-4 py-2 text-center">
+                See More
+              </a>
+            </div>
+          </div>
+        </a>
+
+        {/* Text Compartment */}
+        <div className="bg-green-400 shadow-md rounded-lg overflow-hidden flex flex-col"> {/* Compartment set to green-400 */}
+          <img
+            src="/wine.jpg"
+            alt="wine"
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="text-lg font-bold">Suggested Event</h3>
+            <p className="text-gray-700">The ideal venue for any event or occasion. We make it special.</p>
+            <a href="https://www.viator.com/Tuscany-tourism/d206-r1114451730-s41495075?m=33953&supag=1114451730&supsc=kwd-19143561025&supai=76691132434648&supdv=c&supnt=nt:o&suplp=137821&supli=&supti=kwd-19143561025&tsem=true&supci=kwd-19143561025&supkw=wine%20tasting&msclkid=f9bd25f20b49107e7ab442ec2bafe5c5 " target="_blank" rel="noonpener noreferrer" className="mt-4 inline-block bg-green-500 text-white font-semibold hover:bg-green-600 transition duration-200 px-4 py-2 text-center">
+            See More
+            </a>
+          </div>
+        </div>
+      
+        {/* Recipe Card Compartment */}
+        <div className="bg-green-400 shadow-md rounded-lg overflow-hidden flex flex-col"> {/* Card set to green-400 */}
+          <img
+            src={recipes[currentIndex]?.image || 'default-image-url.jpg'}
+            alt={recipes[currentIndex]?.title}
+            className="w-full h-48 object-cover"
+          />
+          <div className="p-4">
+            <h3 className="text-lg font-bold">{recipes[currentIndex]?.title}</h3>
+            <button
+              className="mt-4 inline-block bg-green-500 text-white font-semibold hover:bg-green-600 transition duration-200 px-4 py-2 text-center"
+              onClick={() => openModal(recipes[currentIndex])}
+            >
+              See More
+            </button>
+          </div>
         </div>
       </div>
 
-    <Dialog
-      open={isModalOpen}
-      onClose={closeModal}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-    >
-      <div className="bg-white rounded-lg w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 relative z-10 shadow-2xl">
-        <button
-          onClick={closeModal}
-          className="absolute top-2 right-2 text-gray-700 hover:text-gray-500 font-bold text-xl"
-        >
-          &times;
-        </button>
-        {selectedRecipe && (
-          <>
-            {/* Updated Image Styling */}
-            <div className="overflow-hidden rounded-lg">
-              <img
-                src={selectedRecipe.image || 'default-image-url.jpg'}
-                alt={selectedRecipe.title}
-                className="w-full h-64 object-cover rounded-lg"
-              />
-            </div>
-
-            {/* Title Styling */}
-            <h3 className="text-3xl font-semibold mt-4 text-center text-gray-800">{selectedRecipe.title}</h3>
-
-            {/* Instructions Styling */}
-            <p className="mt-4 text-gray-700 leading-relaxed text-lg">
-              {selectedRecipe.instructions || 'No instructions available.'}
-            </p>
-
-            {/* Audio Controls */}
-            {selectedRecipe.ttsUrl && (
-              <div className="mt-6 flex justify-center">
-                <button
-                  className="text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition"
-                  onClick={() => playAudioInstructions(selectedRecipe)}
-                >
-                  Play Audio
-                </button>
-
-                {currentAudio && (
-                  <button
-                    className="ml-4 text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition"
-                    onClick={() => {
-                      if (isPlaying) {
-                        stopCurrentAudio();
-                      } else {
-                        currentAudio.play();
-                        setIsPlaying(true);
-                      }
-                    }}
-                  >
-                    {isPlaying ? 'Pause' : 'Resume'}
-                  </button>
-                )}
+      {/* Modal */}
+      <Dialog
+        open={isModalOpen}
+        onClose={closeModal}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      >
+        <div className="bg-white rounded-lg w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 relative z-10 shadow-2xl">
+          <button
+            onClick={closeModal}
+            className="absolute top-2 right-2 text-gray-700 hover:text-gray-500 font-bold text-xl"
+          >
+            &times;
+          </button>
+          {selectedRecipe && (
+            <>
+              <div className="overflow-hidden rounded-lg">
+                <img
+                  src={selectedRecipe.image || 'default-image-url.jpg'}
+                  alt={selectedRecipe.title}
+                  className="w-full h-64 object-cover rounded-lg"
+                />
               </div>
-            )}
-          </>
-        )}
-      </div>
-    </Dialog>
 
+              <h3 className="text-3xl font-semibold mt-4 text-center text-gray-800">{selectedRecipe.title}</h3>
+
+              <p className="mt-4 text-gray-700 leading-relaxed text-lg">
+                {selectedRecipe.instructions || 'No instructions available.'}
+              </p>
+
+              {selectedRecipe.ttsUrl && (
+                <div className="mt-6 flex justify-center">
+                  <button
+                    className="text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition"
+                    onClick={() => playAudioInstructions(selectedRecipe)}
+                  >
+                    Play Audio
+                  </button>
+
+                  {currentAudio && (
+                    <button
+                      className="ml-4 text-white bg-blue-600 px-4 py-2 rounded-md hover:bg-blue-500 transition"
+                      onClick={() => {
+                        if (isPlaying) {
+                          stopCurrentAudio();
+                        } else {
+                          currentAudio.play();
+                          setIsPlaying(true);
+                        }
+                      }}
+                    >
+                      {isPlaying ? 'Pause' : 'Resume'}
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 };

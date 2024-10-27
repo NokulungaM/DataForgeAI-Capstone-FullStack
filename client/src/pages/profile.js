@@ -8,10 +8,10 @@ const Profile = () => {
   const [editedProfile, setEditedProfile] = useState({
     username: "",
     email: "",
+    profilePicture: "",
     location: "",
     bio: "",
   });
-  const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -37,6 +37,7 @@ const Profile = () => {
         setEditedProfile({
           username: response.data.username || "",
           email: response.data.email || "",
+          profilePicture: response.data.profilePicture || "",
           location: response.data.location || "",
           bio: response.data.bio || "",
         });
@@ -55,9 +56,9 @@ const Profile = () => {
     setIsEditing(true);
   };
 
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
+  // const handleFileChange = (e) => {
+  //   setSelectedFile(e.target.files[0]);
+  // };
 
   const handleSaveClick = async () => {
     const token = localStorage.getItem("token");
@@ -111,9 +112,12 @@ const Profile = () => {
             />
             {isEditing && (
               <input
-                type="file"
+                type="url"
+                id="profilePicture"
+                name="profilePicture"
                 accept=".jpg" // Restrict to JPG files
-                onChange={handleFileChange}
+                value = {editedProfile.profilePicture}
+                onChange={handleChange}
               />
             )}
           </div>
@@ -128,7 +132,11 @@ const Profile = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           ) : (
-            <p>{profile.email}</p>
+            <p>
+              <span className="text-md font-bold mb-2">My Email :</span>
+              <br></br>
+              {profile.email}
+            </p>
           )}
           {/* Conditionally render username for display or editing */}
           {isEditing ? (
@@ -141,7 +149,11 @@ const Profile = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           ) : (
-            <p>{profile.username}</p>
+            <p>
+              <span className="text-md font-bold mb-2">My username :</span>
+              <br></br>
+              {profile.username}
+            </p>
           )}
         </aside>
         <main className="flex-1 p-8">
