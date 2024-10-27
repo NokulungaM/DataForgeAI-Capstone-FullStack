@@ -1,6 +1,3 @@
-
-
-
 const WhatWeDo = () => {
   return (
     <section className="py-24 mt-16 bg-gray-50">
@@ -12,7 +9,7 @@ const WhatWeDo = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {/* Compartment 1 */}
             <div className="text-center">
-              <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
+              <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
                 <img
                   src="/mogodu2.jpg"
                   alt="Mogodu"
@@ -29,7 +26,7 @@ const WhatWeDo = () => {
 
             {/* Compartment 2 */}
             <div className="text-center">
-              <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
+              <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
                 <img
                   src="/appetizer-bowl-delicious-1640772.jpg"
                   alt="Appetizer"
@@ -46,7 +43,7 @@ const WhatWeDo = () => {
 
             {/* Compartment 3 */}
             <div className="text-center">
-              <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
+              <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
                 <img
                   src="/cooking-cuisine-delicious-958545.jpg"
                   alt="Cuisine"
@@ -63,58 +60,58 @@ const WhatWeDo = () => {
 
             {/* Compartment 4 */}
             <div className="text-center mt-6">
-              <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
+              <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
                 <img
-                  src="/mogodu2.jpg"
-                  alt="Mogodu"
+                  src="/vegetableShredder.jpeg"
+                  alt="Shredder"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="font-medium text-gray-700 mt-2">Mogodu</p>
+              <p className="font-medium text-gray-700 mt-2">Vegetable Shredder</p>
               <div className="bg-gray-100 p-4 rounded-md shadow-md mt-4">
                 <p className="text-xs text-gray-600">
-                  Explore recipes from around the world.
+                  Try something new. We got your back vegans
                 </p>
               </div>
             </div>
 
             {/* Compartment 5 */}
             <div className="text-center mt-6">
-              <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
+              <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
                 <img
-                  src="/appetizer-bowl-delicious-1640772.jpg"
-                  alt="Appetizer"
+                  src="/vegroll.jpg"
+                  alt="Roll"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="font-medium text-gray-700 mt-2">Appetizer</p>
+              <p className="font-medium text-gray-700 mt-2">Vege Roll</p>
               <div className="bg-gray-100 p-4 rounded-md shadow-md mt-4">
                 <p className="text-xs text-gray-600">
-                  Find meal ideas based on your ingredients.
+                  You can make delicious, but healthy food.
                 </p>
               </div>
             </div>
 
             {/* Compartment 6 */}
             <div className="text-center mt-6">
-              <div className="w-32 h-32 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
+              <div className="w-40 h-40 mx-auto rounded-full overflow-hidden border border-gray-200 shadow-md">
                 <img
-                  src="/cooking-cuisine-delicious-958545.jpg"
-                  alt="Cuisine"
+                  src="/pizza.jpg"
+                  alt="Pizza"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="font-medium text-gray-700 mt-2">Cuisine</p>
+              <p className="font-medium text-gray-700 mt-2">Pizza</p>
               <div className="bg-gray-100 p-4 rounded-md shadow-md mt-4">
                 <p className="text-xs text-gray-600">
-                  Save your favorite recipes for future use.
+                  Need I say more? We have tons of flavors.
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Text Info */}
+        {/* Right Column: Recipe List in Green Box */}
         <div className="lg:w-1/2 flex flex-col justify-center bg-green-300 h-400 overflow-hidden p-8 rounded-lg">
           <h3 className="text-2xl font-bold text-gray-800 mb-4">
             Because Good Mood is Good Food
@@ -132,21 +129,20 @@ const WhatWeDo = () => {
             We will show you how to make a kota or even cook the famous amasonja!
           </p>
           <p className="text-base text-gray-600 mb-4">
-            We have dietary food as well for those who are looking to slim
+            We have dietary food as well for those who are looking to slim.
           </p>
           <p className="text-base text-gray-600 mb-4">
             You love meat, we got you!
           </p>
           <p className="text-base text-gray-600 mb-4">
             You are a vegetarian? You are not left out! We have tons of recipes catered specifically for vegetarians.
-            You can have your meat balls in vegetable, or your chicken the way you want it to be!
+            You can have your meatballs in vegetables, or your chicken the way you want it to be!
           </p>
           <p className="text-xs font-semibold text-gray-800">
-            Perfect for people of all sizes, gender and color.
+            Perfect for people of all sizes, gender, and color.
           </p>
           <div className="font-bold text-gray-700 mt-6">Savory</div>
         </div>
-        
       </div>
     </section>
   );

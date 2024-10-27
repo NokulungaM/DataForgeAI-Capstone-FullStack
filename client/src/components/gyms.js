@@ -8,14 +8,14 @@ const GymsWePartnerWith = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 justify-center">
           {/* Square Compartments for each gym */}
           {[
-            { src: '/fitnessClub.jpg', name: 'Fitness Club', link: 'https://www.planetfitness.co.za/' },
-            { src: '/virgin.jpg', name: 'Virgin Gym', link: 'https://www.virginactive.co.za/' },
-            { src: '/gymconcepts.jpg', name: 'Vintage Gym', link: 'https://www.gymconcepts.com/'},
-            { src: '/vectorGym.jpg', name: 'Vector Gym' },
-            { src: '/gymcompany.jpg', name: 'Gym Company' },
-            { src: '/sultangym.jpg', name: 'Sultan Gym' },
-            { src: '/thegym.jpg', name: 'The Gym' },
-            { src: '/fitnessSportgym.jpg', name: 'Fitness Sport Gym' },
+            { src: '/planet.png', link: 'https://www.planetfitness.co.za/' },
+            { src: '/virgin.jpg', link: 'https://www.virginactive.co.za/' },
+            { src: '/gymconcepts.jpg', link: 'https://www.gymconcepts.com/'},
+            { src: '/bodytec.png', link: 'https://bodytec.co.za/' },
+            { src: '/gymcompany.jpg', link: 'https://www.gymcompany.co.za/' },
+            { src: '/Curves.jpg', link: 'https://www.curvesafrica.com/' },
+            { src: '/edge.jpg', link: 'https://edgefitness.co.za/' },
+            { src: '/fitnessSportgym.jpg', link: '' },
           ].map((item, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="w-48 h-48 mx-auto rounded-lg overflow-hidden border border-gray-200 shadow-md">
