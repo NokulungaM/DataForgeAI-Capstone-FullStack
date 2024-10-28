@@ -16,6 +16,7 @@ const mealPlan = require('./routes/mealPlanRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const random = require('./routes/randomRoutes');
 const contactRoutes = require('./routes/contactRoutes')
+const authRoutes = require('./routes/authRoutes')
 // CONFIGURING ENVIRONMENT VARIABLES
 require("dotenv").config();
 
@@ -53,6 +54,7 @@ app.use('/user', userRoutes);
 app.use('/meal-plan', mealPlan);
 app.use('/random', random);
 app.use('/profile', profileRoutes);
+app.use('/auth', authRoutes);
 
 // Proxy route to fetch Google Translate TTS audio
 app.get('/proxy-tts', async (req, res) => {

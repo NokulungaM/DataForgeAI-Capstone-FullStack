@@ -1,6 +1,6 @@
 {
+  "/_document": "pages/_document.js",
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/communityPage": "pages/communityPage.js"
+  "/auth/forgotPassword": "pages/auth/forgotPassword.js"
 }

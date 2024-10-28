@@ -13,10 +13,10 @@ const ForgotPassword = () => {
       setError("");
   
       try {
-        const response = await axios.post("http://localhost:3001/auth/forgotPassword", { email });
+        const response = await axios.post("http://localhost:3001/auth/forgot-password", { email });
         setMessage("Check your email for the reset link.");
       } catch (err) {
-        setError(err.response?.data?.error || "Something went wrong.");
+        setError(err.response?.data?.error );
       }
     };
 
@@ -27,6 +27,7 @@ const ForgotPassword = () => {
         <input
           type="email"
           placeholder="Enter your email"
+          id = "email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="mb-2 p-2 border w-80"
