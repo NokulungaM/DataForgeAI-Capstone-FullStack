@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-// const bcrypt = require('bcrypt');
-
+const crypto = require("crypto");
 
 
 const userSchema = new Schema({
@@ -28,6 +27,14 @@ const userSchema = new Schema({
     required: true,
     minlength: 8,
   },
+
+  // Fields for password reset functionality
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+
+  // Fields for email verification functionality
+  verificationToken: String,
+  verificationTokenExpires: Date,
 
   mealPlans: [
     {
@@ -73,12 +80,34 @@ const userSchema = new Schema({
   commentedRecipes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Recipe" }],
 });
 
-// userSchema.pre("save", async function (next) {
-//   if (this.isModified("password")) {
-//     this.password = await bcrypt.hash(this.password, 10);
-//   }
-//   next();
-// });
+// Method to generate password reset token
+userSchema.methods.getResetPasswordToken = function () {
+  // Generate token
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // Hash and set reset token in schema
+  this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+  // Set token expiration (e.g., 10 minutes)
+  this.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  return resetToken;
+};
+
+// Method to generate email verification token
+userSchema.methods.getVerificationToken = function () {
+  // Generate token
+  const verificationToken = crypto.randomBytes(20).toString('hex');
+
+  // Hash and set verification token in schema
+  this.verificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+
+  // Set token expiration (e.g., 24 hours)
+  this.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+  return verificationToken;
+};
+
 
 const User = mongoose.model("User", userSchema);
 

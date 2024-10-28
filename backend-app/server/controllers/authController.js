@@ -3,6 +3,8 @@ const { validationResult, body } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const sendEmail = require("../utils/sendEmail");
+const crypto = require("crypto");
 
 // Auth middleware for registration
 const validateSignUp = [
@@ -173,87 +175,88 @@ const validateForgotPassword = [
 
 exports.forgotPassword = async (req, res) => {
   try {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const { email } = req.body;
 
-    // Check if the user exists
+    // Checks if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: "No user found with this email" });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Generate a reset token
-    const resetToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    // Generate reset token
+    const resetToken = user.getResetPasswordToken();
 
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Save reset token and expiration to user in database
+    await user.save({ validateBeforeSave: false });
 
-    // Get the base URL from the request
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
+    // Create reset URL
+    const resetUrl = `${req.protocol}://${req
+      .get("host")
+      .replace(":3001", ":3000")}/account/resetPassword?token=${resetToken}`;
 
-    const mailOptions = {
-      from: process.env.EMAIL,
-      to: email,
-      subject: "Password Reset",
-      text: `You requested a password reset. Click the link to reset your password: ${resetUrl}`,
-    };
+    // HTML message for email
+    const message = `
+      <h1>You have requested a password reset</h1>
+      <p>Click the following link to reset your password:</p>
+      <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+    `;
 
-    await transporter.sendMail(mailOptions);
+    // Send email
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: "Password Reset Request",
+        html: message,
+      });
 
-    res.status(200).json({ message: "Reset link sent to your email" });
+      res.status(200).json({
+        message: `Email sent to ${user.email} successfully`,
+      });
+    } catch (error) {
+      // Reset password fields in database if email fails
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      return res
+        .status(500)
+        .json(error.message);
+    }
   } catch (error) {
-    console.error("Forgot password error:", error);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Reset Password handler
 exports.resetPassword = async (req, res) => {
   try {
-    const { token, newPassword } = req.body;
+    // Get reset token from URL
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.resetToken)
+      .digest("hex");
 
-    // Find user by reset token
+    // Check if token is valid
     const user = await User.findOne({
-      resetPasswordToken: token,
+      resetPasswordToken,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user) {
-      return res.status(400).json({ error: "Password reset token is invalid or has expired" });
+      return res.status(400).json({ message: "Invalid or expired token" });
     }
 
-    // Hash the new password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-    // Update user password and clear the reset token fields
-    user.password = hashedPassword;
+    // Set new password
+    user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
+
+    // Save updated user
     await user.save();
 
-    // Automatically sign the user in by generating a JWT
-    const newToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.status(200).json({ token: newToken, message: "Password reset successful, signed in automatically" });
+    res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-    console.error("Reset Password Error:", error);
-    res.status(500).json({ error: "Failed to reset password" });
+    res.status(500).json({ message: error.message });
   }
 };
 

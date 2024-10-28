@@ -1,20 +1,20 @@
 const mongoose = require('mongoose');
 
 const forgotPasswordSchema = new mongoose.Schema({
-  userId : {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  token: {
+  email: {
     type: String,
     required: true,
+    unique: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    expires: 3600, // Token expires in 1 hour
-  },
+  userId: { type: mongoose.Schema.Types.ObjectId,
+     ref: 'User', 
+     required: true },
+  resetToken: { type: String, 
+    required: true },
+  expiresAt: { type: Date, 
+    required: true },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 const ForgotPassword = mongoose.model('ForgotPassword', forgotPasswordSchema);

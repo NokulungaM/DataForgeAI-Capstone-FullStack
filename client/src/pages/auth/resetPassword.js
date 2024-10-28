@@ -7,27 +7,51 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter();
-  const { token } = router.query; // Retrieve token from URL query parameters
+  const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState(null); // Retrieve token from URL query parameters
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    console.log("Token from localStorage:", storedToken);
+    setToken(storedToken);
+  }, []);
+
+  const handleSubmit = async (e, token) => {
     e.preventDefault();
-    setMessage("");
-    setError("");
 
-    if (newPassword !== confirmPassword) {
+    if (password !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
-      const response = await axios.post("http://localhost:3001/auth/reset-password", {
-        token,
-        newPassword,
-      });
-      setMessage("Password reset successfully. You can now sign in.");
+      setLoading(true);
+      const response = await axios.put(
+        `http://localhost:3001/auth/reset-password/${token}`,
+        {
+          password,
+        }
+      );
+
+      if (response.data.message) {
+        setMessage(response.data.message);
+        setError("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
     } catch (err) {
-      setError(err.response?.data?.error || "Something went wrong.");
+      setError(
+        err.response?.data?.message ||
+          "Failed to reset the password. Please try again."
+      );
+      setMessage("");
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -1,22 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [token, setToken] = useState(null);
     const router = useRouter();
+  
+    useEffect(() => {
+      const storedToken = localStorage.getItem("token");
+      console.log("Token from localStorage:", storedToken);
+      setToken(storedToken);
+    }, []);
+
   
     const handleSubmit = async (e) => {
       e.preventDefault();
-      setMessage("");
-      setError("");
-  
+
       try {
-        const response = await axios.post("http://localhost:3001/auth/forgot-password", { email });
-        setMessage("Check your email for the reset link.");
+        const response = await axios.post(
+          "http://localhost:3001/auth/forgot-password",
+          {
+            email,
+          }
+        );
+
+        if (response.data.message) {
+          setMessage(response.data.message);
+          setError("");
+        }
       } catch (err) {
-        setError(err.response?.data?.error );
+        setError(err.message);
+        setMessage("");
       }
     };
 
