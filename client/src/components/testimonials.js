@@ -50,7 +50,12 @@ const Testimonials = () => {
   };
 
   return (
-    <section className="py-12 my-16">
+    <section
+      className="py-12 my-16"
+      style={{
+        backgroundImage:"url(/Testimonial.png)"
+      }}
+    >
       <h2 className="text-3xl font-semibold text-center text-gray-800 mb-12">
         Don’t just take our word for it
       </h2>
