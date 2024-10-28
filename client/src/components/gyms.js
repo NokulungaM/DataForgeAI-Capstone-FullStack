@@ -4,7 +4,12 @@ const GymsWePartnerWith = () => {
   return (
     <section className="py-24 bg-gray-50">
       <div className="container mx-auto text-center">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8">Gyms We Partner With</h2>
+        <h2 className="text-3xl font-bold text-green-700 mb-8">Gyms We Partner With</h2>
+        
+        <p className="text-base text-green-700 italic text-center mt-6">
+          We are proud to partner with some of the best fitness clubs around. Whether you're a fitness enthusiast or a beginner, our partners provide the perfect environment to help you achieve your health goals.
+        </p>
+        <br/>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 justify-center">
           {/* Square Compartments for each gym */}
           {[
@@ -39,9 +44,8 @@ const GymsWePartnerWith = () => {
             </div>
           ))}
         </div>
-        <p className="text-base text-gray-600 mt-6">
-          We are proud to partner with some of the best fitness clubs around. Whether you're a fitness enthusiast or a beginner, our partners provide the perfect environment to help you achieve your health goals.
-        </p>
+        
+
       </div>
     </section>
   );
