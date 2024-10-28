@@ -171,7 +171,7 @@ const Search = () => {
           <div className="w-full flex items-center justify-center mb-6">
             <input
               type="text"
-              placeholder="Enter ingredients"
+              placeholder="ingredient1, ingredient2, ingredient3, ect.. "
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full md:w-1/2 p-3 rounded-l bg-gray-800 text-white border-none outline-none"
