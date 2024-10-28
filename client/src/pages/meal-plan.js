@@ -10,10 +10,11 @@ const placeholders = {
 };
 
 // Button component
-const Button = ({ children, onClick, className, disabled }) => (
+const Button = ({ children, onClick, className, disabled, type = "button" }) => (
   <button
+    type={type}
     onClick={onClick}
-    className={`px-4 py-2 bg-blue-500 text-white rounded ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    className={`px-4 py-2 bg-green-500 text-white rounded ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
     disabled={disabled}
   >
     {children}
@@ -97,89 +98,124 @@ export default function MealPlan() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Generate Your Meal Plan</h1>
+    <div className="container mx-auto p-4 max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="md:col-span-2">
+        <h1 className="text-3xl font-bold mb-2 text-green-700 text-center">Generate Your Meal Plan</h1>
+        <hr className="border-b-2 border-green-700 mb-6" /> {/* Horizontal line */}
+        <Card>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-gray-700">Time Frame:</label>
+              <select
+                value={timeFrame}
+                onChange={(e) => setTimeFrame(e.target.value)}
+                className="w-full p-2 border rounded"
+              >
+                <option value="day">Day</option>
+                <option value="week">Week</option>
+              </select>
+            </div>
 
-      <Card>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700">Time Frame:</label>
-            <select
-              value={timeFrame}
-              onChange={(e) => setTimeFrame(e.target.value)}
-              className="w-full p-2 border rounded"
-            >
-              <option value="day">Day</option>
-              <option value="week">Week</option>
-            </select>
+            <div>
+              <label className="block text-gray-700">Target Calories:</label>
+              <input
+                type="number"
+                value={targetCalories}
+                onChange={(e) => setTargetCalories(e.target.value)}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700">Diet:</label>
+              <input
+                type="text"
+                list="dietOptions"
+                value={diet}
+                onChange={(e) => setDiet(e.target.value)}
+                placeholder="Enter your diet preference or select an option"
+                className="w-full p-2 border rounded"
+              />
+              <datalist id="dietOptions">
+                <option value="Vegetarian" />
+                <option value="Vegan" />
+                <option value="Paleo" />
+              </datalist>
+            </div>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <span className="animate-spin mr-2">🔄</span>
+                  Generating Meal Plan
+                </>
+              ) : (
+                'Generate Meal Plan'
+              )}
+            </Button>
+          </form>
+        </Card>
+
+        {error && (
+          <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+            <strong className="font-bold">Error: </strong>
+            <span className="block sm:inline">{error}</span>
           </div>
+        )}
 
-          <div>
-            <label className="block text-gray-700">Target Calories:</label>
-            <input
-              type="number"
-              value={targetCalories}
-              onChange={(e) => setTargetCalories(e.target.value)}
-              className="w-full p-2 border rounded"
+        {mealPlan && mealPlan.mealPlan && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
+            {mealPlan.mealPlan.map((meal, index) => {
+              const mealType = index === 0 ? 'breakfast' : index === 1 ? 'lunch' : 'supper';
+              const imageSrc = placeholders[mealType] || placeholders.supper;
+
+              return (
+                <Card key={index} onClick={() => openModal(meal, mealType)}>
+                  <img
+                    src={imageSrc}
+                    alt={meal.title || `${mealType.charAt(0).toUpperCase() + mealType.slice(1)} Image`}
+                    className="w-full h-48 object-cover rounded-md mb-4"
+                  />
+                  <hr className="border-b-2 border-gray-300 my-2" /> {/* Horizontal line after image */}
+                  <h3 className="text-lg font-bold">{meal.title || mealType.charAt(0).toUpperCase() + mealType.slice(1)}</h3>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col bg-gradient-to-b from-green-300 to-green-500 p-6 rounded-lg shadow-lg h-full">
+        {/* Suggested Meals Section */}
+        <h2 className="text-xl font-bold mb-4 text-green-700">Suggested Meals</h2>
+        
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-1 gap-6">
+          <div className="flex flex-col items-center relative">
+            <h3 className="absolute top-0 text-lg font-bold text-white mt-12 bg-black bg-opacity-50 px-2 rounded">Muesli for Breakfast</h3>
+            <img
+              src="/flakes.jpg" 
+              alt="Flakes"
+              className="w-40 h-40 rounded-full mb-1 object-cover"
             />
           </div>
-
-          <div>
-            <label className="block text-gray-700">Diet:</label>
-            <input
-              type="text"
-              list="dietOptions"
-              value={diet}
-              onChange={(e) => setDiet(e.target.value)}
-              placeholder="Enter your diet preference or select an option"
-              className="w-full p-2 border rounded"
+          <div className="flex flex-col items-center relative">
+            <h3 className="absolute top-0 text-lg font-bold text-white mt-12 bg-black bg-opacity-50 px-2 rounded">Cheesy Salad for Lunch</h3>
+            <img
+              src="/lunch.jpeg" 
+              alt="Salad"
+              className="w-40 h-40 rounded-full mb-1 object-cover"
             />
-            <datalist id="dietOptions">
-              <option value="Vegetarian" />
-              <option value="Vegan" />
-              <option value="Paleo" />
-            </datalist>
           </div>
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? (
-              <>
-                <span className="animate-spin mr-2">🔄</span>
-                Generating Meal Plan
-              </>
-            ) : (
-              'Generate Meal Plan'
-            )}
-          </Button>
-        </form>
-      </Card>
-
-      {error && (
-        <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-          <strong className="font-bold">Error: </strong>
-          <span className="block sm:inline">{error}</span>
+          <div className="flex flex-col items-center relative">
+            <h3 className="absolute top-0 text-lg font-bold text-white mt-12 bg-black bg-opacity-50 px-2 rounded">Fish and Salad for Dinner</h3>
+            <img
+              src="/dinner.jpg" 
+              alt="Fish and salad"
+              className="w-40 h-40 rounded-full mb-1 object-cover"
+            />
+          </div>
         </div>
-      )}
-
-      {mealPlan && mealPlan.mealPlan && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-          {mealPlan.mealPlan.map((meal, index) => {
-            const mealType = index === 0 ? 'breakfast' : index === 1 ? 'lunch' : 'supper';
-            const imageSrc = placeholders[mealType] || placeholders.supper;
-
-            return (
-              <Card key={index} onClick={() => openModal(meal, mealType)}>
-                <img
-                  src={imageSrc}
-                  alt={meal.title || `${mealType} placeholder`}
-                  className="w-full h-48 object-cover rounded-md mb-4"
-                />
-                <h3 className="text-lg font-bold">{meal.title || mealType.charAt(0).toUpperCase() + mealType.slice(1)}</h3>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+      </div>
 
       <Dialog
         open={isModalOpen}
