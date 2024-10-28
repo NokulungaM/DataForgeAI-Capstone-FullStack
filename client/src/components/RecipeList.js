@@ -115,11 +115,11 @@ const FeaturedRecipes = ({ recipes }) => {
     <div className="relative w-full max-w-5xl mx-auto mt-8">
       {/* Hero Section */}
       <div className="mb-12 grid grid-cols-2 gap-6">
-        <h1 className="text-6xl font-bold tracking-wider mb-6 text-left"> {/* Heading aligned to left */}
+        <h1 className="text-6xl font-bold tracking-wider mb-6 text-left">
           Live it up,<br />
           DishDash style
         </h1>
-        <p className="text-s text-gray-700 max-w-3xl">
+        <p className="text-s text-green-500 max-w-3xl">
           Discover a world of recipes, crafted for you to enjoy and explore the flavors of different cuisines. Whether you're looking for quick meals or gourmet dishes, DishDash has you covered.
         </p>
       </div>
