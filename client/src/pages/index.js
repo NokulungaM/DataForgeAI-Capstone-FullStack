@@ -4,7 +4,7 @@ import Image from "next/image";
 import Testimonials from "../components/testimonials"; 
 import WhatWeDo from "../components/WhatWeDo";
 import Gyms from '../components/gyms';  
-import Article from '../components/article';
+
 
 
 
@@ -34,7 +34,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white-to-br text-green font-poppins">
+    <div className="min-h-screen bg-white-to-br text-green-700 font-poppins">
       <main className="flex flex-col items-center justify-center text-center px-6 py-16">
         <div className="flex flex-col md:flex-row gap-32 items-center">
           <div className="col-span-3 md:flex-2">
@@ -73,7 +73,6 @@ const HomePage = () => {
 
         {/*Section */}
         <WhatWeDo />
-        <Article />
         <Testimonials />
         <Gyms />
         
@@ -84,7 +83,6 @@ const HomePage = () => {
 
         {!loading && !error && recipes.length > 0 && (
           <div className="mt-16 w-full">
-            <h2 className="text-3xl font-bold mb-6">Featured Recipes</h2>
             <div className="cyan-500">
               <RecipeList recipes={recipes} />
             </div>
