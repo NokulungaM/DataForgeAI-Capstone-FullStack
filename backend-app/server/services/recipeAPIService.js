@@ -38,7 +38,7 @@ const fetchAndSaveRandomRecipes = async () => {
     // Fetch random recipes from Spoonacular API
     const response = await axios.get(apiUrl, {
       params: {
-        number: 8, // Number of random recipes to fetch
+        number: 9, // Number of random recipes to fetch
         apiKey: spoonacularApiKey,
       },
     });
